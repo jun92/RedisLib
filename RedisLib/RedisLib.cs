@@ -56,6 +56,10 @@ namespace RedisLib
         {
             return new RedisLists(_conn);
         }
+        public RedisConnection GetConnection()
+        {
+            return new RedisConnection(_conn);
+        }
     }
     public enum REDIS_RESPONSE_TYPE
     {
@@ -103,6 +107,9 @@ namespace RedisLib
             }
             if (RESP.StartsWith("$")) // bulk string 
             {
+                String[] token = RESP.Split('$', '\r', '\n');
+                
+                result_string = token[3];
                 response_type = REDIS_RESPONSE_TYPE.BSTRING;
 
             }
@@ -284,18 +291,16 @@ namespace RedisLib
 
             return true;
         }
-        public REDIS_RESPONSE_TYPE Request(RESPMaker req)
+//       public REDIS_RESPONSE_TYPE Request(RESPMaker req)
+         public String  Request(RESPMaker req)
         {
-            
-
             // Reqest & response
             Send(req.Make().ToString());
             Recv();
-
+            return _RecvString;
             // analyse & build data struture to make useful.
-            rr.parse(_RecvString);
-
-            return rr.response_type;
+            /*rr.parse(_RecvString);
+            return rr.response_type;*/
         }
     }
     public class RESPToken

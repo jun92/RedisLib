@@ -12,14 +12,16 @@ namespace RedisLib
     {
         public int retVal;
         public RedisConnManager conn;
+        public RedisRESP2Class _rr;
         public RedisStrings(RedisConnManager conn)
         {
             this.conn = conn;
+            _rr = new RedisRESP2Class();
 
         }
         public REDIS_RESPONSE_TYPE Append(string key, string value)
         {
-            REDIS_RESPONSE_TYPE res;
+            
             RESPToken resp_key = new RESPToken(key);
             RESPToken resp_value = new RESPToken(value);
 
@@ -31,10 +33,9 @@ namespace RedisLib
             m.Add(resp_key);
             m.Add(resp_value);
 
-            res = conn.Request(m);
-            return res;
+            _rr.parse(conn.Request(m));
+            return _rr.response_type;
         }
-
     }
 }
 }
