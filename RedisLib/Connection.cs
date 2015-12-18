@@ -7,28 +7,12 @@ namespace Syncnet
 {
 namespace RedisLib
 {
-    public class RedisConnection
+    public class RedisConnection : RedisObject
     {
-        public int retVal;
-        private RedisConnManager conn;
-        private RedisRESP2Class _rr; 
 
-        public string getString()
-        {
-            return _rr.result_string;
+        public RedisConnection(RedisConnManager conn) : base( conn) 
+        { 
         }
-        public RedisConnection(RedisConnManager conn)
-        {
-            this.conn = conn;
-            _rr = new RedisRESP2Class();
-        }
-
-        private REDIS_RESPONSE_TYPE Process(RESPMaker m)
-        {
-            _rr.parse(conn.Request(m));
-            return _rr.response_type;
-        }
-
         public REDIS_RESPONSE_TYPE auth(string password)
         {
             RESPMaker m         = new RESPMaker();
@@ -79,7 +63,7 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
             RESPToken cmd = new RESPToken("SELECT");
-            RESPToken n = new RESPToken(number);
+            RESPToken n = new RESPToken(number.ToString());
 
             m.Add(cmd);
             m.Add(n);

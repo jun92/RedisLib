@@ -7,16 +7,11 @@ namespace Syncnet
 { 
 namespace RedisLib
 {
-    public class RedisLists
+    public class RedisLists : RedisObject 
     {
-        public int retVal;
-        public RedisConnManager conn;
-        public RedisRESP2Class _rr; 
-        public RedisLists(RedisConnManager conn)
+           
+        public RedisLists(RedisConnManager conn) : base(conn)
         {
-            this.conn = conn;
-            _rr = new RedisRESP2Class();
-
         }
         public REDIS_RESPONSE_TYPE rpush(String key, params string[] values )
         {
@@ -33,8 +28,8 @@ namespace RedisLib
                 RESPToken resp_value = new RESPToken(e);
                 m.Add(resp_value);
             }
-            _rr.parse(conn.Request(m));
-            return _rr.response_type;
+
+            return Process(m);
         }
         public REDIS_RESPONSE_TYPE lrange(String key, String start, String end)
         {
@@ -49,9 +44,8 @@ namespace RedisLib
             m.Add(resp_key);
             m.Add(resp_start);
             m.Add(resp_end);
-            _rr.parse(conn.Request(m));
 
-            return _rr.response_type;
+            return Process(m);
         }
     }
 }

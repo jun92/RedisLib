@@ -76,17 +76,29 @@ namespace RedisLib
         public string               result_string;
         public List<String>         result_array;
         public REDIS_RESPONSE_TYPE  response_type;
+        public RedisRESP2Class()
+        {            
+            result_array = new List<String>();
+        }
+        
         public void getAsDictionary(ref Dictionary<String, String> dic)
         {
-            int i;            
+            int i;
             if (result_array.Count == 0) return;
-
             // 짝수이어야만 한다. 
             if ((result_array.Count % 2) != 0) return;
-
             for(i = 0; i< result_array.Count; i += 2)
             {
                 dic.Add(result_array[i].ToString(), result_array[i + 1].ToString());
+            }
+        }
+        public void getAsLists(ref List<String> list)
+        {
+            int i;
+            if (result_array.Count == 0) return;
+            for( i = 0; i < result_array.Count; i++)
+            {
+                list.Add(result_array[i].ToString());
             }
         }
         public void parse(String RESP)
@@ -107,11 +119,9 @@ namespace RedisLib
             }
             if (RESP.StartsWith("$")) // bulk string 
             {
-                String[] token = RESP.Split('$', '\r', '\n');
-                
+                String[] token = RESP.Split('$', '\r', '\n');                
                 result_string = token[3];
                 response_type = REDIS_RESPONSE_TYPE.BSTRING;
-
             }
             if (RESP.StartsWith("-")) // error 
             {
@@ -120,8 +130,7 @@ namespace RedisLib
                 response_type = REDIS_RESPONSE_TYPE.ERROR;
             }
             if (RESP.StartsWith("*")) // array 
-            {
-                result_array = new List<String>();
+            {                
                 int i;
                 String[] d = new String[]{ "\r\n"};
                 String[] token = RESP.Split(d, StringSplitOptions.RemoveEmptyEntries);
@@ -130,7 +139,6 @@ namespace RedisLib
                     result_array.Add(token[i]);
                 }
                 response_type = REDIS_RESPONSE_TYPE.ARRAY;
-
             }
         }
     }

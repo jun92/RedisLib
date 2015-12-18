@@ -11,13 +11,20 @@ namespace TestApp
     {
         static void Main(string[] args)
         {
-            Redis r = new Redis("192.168.184.217", 6379);     
+            Dictionary<string, string> dic = new Dictionary<string, string>();
+            List<String> list = new List<String>();
+            
+            
+            Redis r = new Redis("192.168.184.217", 6379);
+            RedisConnection c = r.GetConnection();
+            c.select(1);
 
+            RedisHashes h = r.GetHashes();
+
+            h.hkeys("key0001");
+            h.getLists(ref list);
 
             
-            RedisConnection rc = r.GetConnection();
-
-            rc.echo("Hello");
             
             
 
