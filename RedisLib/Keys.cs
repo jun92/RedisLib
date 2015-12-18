@@ -50,6 +50,44 @@ namespace RedisLib
             }
             return Process(m);
         }
+
+        public REDIS_RESPONSE_TYPE expire(String key, int seconds)
+        {
+            RESPMaker m = new RESPMaker(); 
+            RESPToken cmd = new RESPToken("EXPIRE");
+            RESPToken resp_key = new RESPToken(key);
+            RESPToken resp_seconds = new RESPToken(seconds.ToString());
+
+            m.Add(cmd);
+            m.Add(resp_key);
+            m.Add(resp_seconds);
+
+            return Process(m);
+        }
+        public REDIS_RESPONSE_TYPE expireat(String key, int unix_timestamp)
+        {
+            RESPMaker m = new RESPMaker(); 
+            RESPToken cmd = new RESPToken("EXPIREAT");
+            RESPToken resp_key = new RESPToken(key);
+            RESPToken resp_time = new RESPToken(unix_timestamp.ToString());
+
+            m.Add(cmd);
+            m.Add(resp_key);
+            m.Add(resp_time);
+
+            return Process(m);
+        }
+        public REDIS_RESPONSE_TYPE keys(String pattern)
+        {
+            RESPMaker m = new RESPMaker(); 
+            RESPToken cmd = new RESPToken("KEYS");
+            RESPToken resp_pattern = new RESPToken(pattern);
+            m.Add(cmd);
+            m.Add(resp_pattern);
+            return Process(m);
+        }
+
+        
         /*
         public REDIS_RESPONSE_TYPE ()
         {

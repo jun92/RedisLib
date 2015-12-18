@@ -2,15 +2,10 @@
 *.dll
 *.pdb
 *.cache
-RedisLib/obj/Debug/TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs
-RedisLib/obj/Debug/RedisLib.csproj.FileListAbsolute.txt
-RedisLib/obj/Debug/TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs
+RedisLib/bin/*
 RedisLib/obj/*
 RedisLibUnitTest/obj/*
 RedisLibUnitTest/bin/*
-RedisLibUnitTest/obj/Debug/RedisLibUnitTest.csproj.FileListAbsolute.txt
-RedisLibUnitTest/obj/Debug/TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs
-TestApp/bin/Debug/TestApp.vshost.exe.manifest
 TestApp/bin/*
 TestApp/obj/*
 *.suo
