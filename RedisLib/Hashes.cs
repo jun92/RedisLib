@@ -16,32 +16,22 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE hdel(string key, string field, string value)
         {
             RESPMaker m = new RESPMaker();
-            RESPToken cmd = new RESPToken("HDEL");
-            RESPToken resp_key = new RESPToken(key);
-            RESPToken resp_field = new RESPToken(field);
 
-            m.Add(cmd);
-            m.Add(resp_key);
-            m.Add(resp_field);
+            m.Add(new RESPToken("HDEL"));
+            m.Add(new RESPToken(key));
+            m.Add(new RESPToken(field));
             
-            if (value.Length != 0)
-            {
-                RESPToken resp_value = new RESPToken(value);
-                m.Add(resp_value);
-            }
+            if (value.Length != 0) m.Add(new RESPToken(value));            
             return Process(m);
         }
 
         public REDIS_RESPONSE_TYPE hexists(String key, String field)
         {
             RESPMaker m = new RESPMaker();
-            RESPToken cmd = new RESPToken("HEXISTS");
-            RESPToken resp_key = new RESPToken(key);
-            RESPToken resp_field = new RESPToken(field);
 
-            m.Add(cmd);
-            m.Add(resp_key);
-            m.Add(resp_field);
+            m.Add(new RESPToken("HEXISTS"));
+            m.Add(new RESPToken(key));
+            m.Add(new RESPToken(field));
 
             return Process(m);
         }
@@ -49,24 +39,19 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE hget(String key, String field)
         {
             RESPMaker m = new RESPMaker();
-            RESPToken cmd = new RESPToken("HGET");
-            RESPToken resp_key = new RESPToken(key);
-            RESPToken resp_field = new RESPToken(field);
 
-            m.Add(cmd);
-            m.Add(resp_key);
-            m.Add(resp_field);
+            m.Add(new RESPToken("HGET"));
+            m.Add(new RESPToken(key));
+            m.Add(new RESPToken(field));
 
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE hgetall(string hashname)
         {
             RESPMaker m = new RESPMaker();
-            RESPToken resp_command = new RESPToken("HGETALL");
-            RESPToken resp_hashname = new RESPToken(hashname);
-
-            m.Add(resp_command);
-            m.Add(resp_hashname);
+            
+            m.Add(new RESPToken("HGETALL"));
+            m.Add(new RESPToken(hashname));
 
             return Process(m);
         }
@@ -74,15 +59,11 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE hincrby(String key, String field, int increment)
         {
             RESPMaker m = new RESPMaker();
-            RESPToken resp_cmd = new RESPToken("HINCRBY");
-            RESPToken resp_key = new RESPToken(key);
-            RESPToken resp_field = new RESPToken(field);
-            RESPToken resp_incre = new RESPToken(increment.ToString());
-
-            m.Add(resp_cmd);
-            m.Add(resp_key);
-            m.Add(resp_field);
-            m.Add(resp_incre);
+            
+            m.Add(new RESPToken("HINCRBY"));
+            m.Add(new RESPToken(key));
+            m.Add(new RESPToken(field));
+            m.Add(new RESPToken(increment.ToString()));
 
             return Process(m);
         }
@@ -90,15 +71,11 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE hincrbyfloat(String key, String field, float increment)
         {
             RESPMaker m = new RESPMaker();
-            RESPToken resp_cmd = new RESPToken("HINCRBYFLOAT");
-            RESPToken resp_key = new RESPToken(key);
-            RESPToken resp_field = new RESPToken(field);
-            RESPToken resp_incre = new RESPToken(increment.ToString());
 
-            m.Add(resp_cmd);
-            m.Add(resp_key);
-            m.Add(resp_field);
-            m.Add(resp_incre);
+            m.Add(new RESPToken("HINCRBYFLOAT"));
+            m.Add(new RESPToken(key));
+            m.Add(new RESPToken(field));
+            m.Add(new RESPToken(increment.ToString()));
 
             return Process(m);
         }
@@ -106,11 +83,9 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE hkeys(String key)
         {
             RESPMaker m = new RESPMaker();
-            RESPToken resp_cmd = new RESPToken("HKEYS");
-            RESPToken resp_key = new RESPToken(key);
 
-            m.Add(resp_cmd);
-            m.Add(resp_key);
+            m.Add(new RESPToken("HKEYS"));
+            m.Add(new RESPToken(key));
 
             return Process(m);
         }
@@ -118,11 +93,9 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE hlen(String key)
         {
             RESPMaker m = new RESPMaker();
-            RESPToken resp_cmd = new RESPToken("HLEN");
-            RESPToken resp_key = new RESPToken(key);
 
-            m.Add(resp_cmd);
-            m.Add(resp_key);
+            m.Add(new RESPToken("HLEN"));
+            m.Add(new RESPToken(key));
 
             return Process(m);
         }
@@ -130,33 +103,26 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE hmget(String key, params String[] fields)
         {
             RESPMaker m = new RESPMaker();
-            RESPToken resp_cmd = new RESPToken("HMGET");
-            RESPToken resp_key = new RESPToken(key);
 
-            m.Add( resp_cmd );
-            m.Add( resp_key );
+            m.Add(new RESPToken("HMGET"));
+            m.Add(new RESPToken(key));
 
             foreach( String s in fields )
-            {
-                RESPToken field = new RESPToken(s);
-                m.Add(field);
+            {                
+                m.Add(new RESPToken(s));
             }
             return Process(m);
         }        
         public REDIS_RESPONSE_TYPE hmset(String key, Dictionary<String, String> fields)
         {
-            RESPMaker m = new RESPMaker();
-            RESPToken resp_key = new RESPToken(key);
+            RESPMaker m = new RESPMaker();            
 
-            m.Add(resp_key);
+            m.Add(new RESPToken(key));
 
             foreach( KeyValuePair<String, String> kv in fields)
             {
-                RESPToken fKey = new RESPToken(kv.Key);
-                RESPToken fVal = new RESPToken(kv.Value);
-
-                m.Add(fKey);
-                m.Add(fVal);
+                m.Add(new RESPToken(kv.Key));
+                m.Add(new RESPToken(kv.Value));
             }
             return Process(m);
         }
@@ -164,15 +130,11 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE hset(string hashname, string key, string value)
         {
             RESPMaker m = new RESPMaker();
-            RESPToken Command       = new RESPToken("HSET");
-            RESPToken resp_hash     = new RESPToken(hashname);
-            RESPToken resp_key      = new RESPToken(key);
-            RESPToken resp_value    = new RESPToken(value);         
 
-            m.Add(Command);
-            m.Add(resp_hash);
-            m.Add(resp_key);
-            m.Add(resp_value);
+            m.Add(new RESPToken("HSET"));
+            m.Add(new RESPToken(hashname));
+            m.Add(new RESPToken(key));
+            m.Add(new RESPToken(value));
 
             return Process(m);
         }
@@ -180,15 +142,11 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE hsetnx(String key, String field, String value)
         {
             RESPMaker m = new RESPMaker();
-            RESPToken Command = new RESPToken("HSETNX");
-            RESPToken resp_hash = new RESPToken(key);
-            RESPToken resp_key = new RESPToken(field);
-            RESPToken resp_value = new RESPToken(value);
 
-            m.Add(Command);
-            m.Add(resp_hash);
-            m.Add(resp_key);
-            m.Add(resp_value);
+            m.Add(new RESPToken("HSETNX"));
+            m.Add(new RESPToken(key));
+            m.Add(new RESPToken(field));
+            m.Add(new RESPToken(value));
 
             return Process(m);
         }
@@ -196,24 +154,18 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
 
-            RESPToken cmd = new RESPToken("HSTRLEN");
-            RESPToken resp_key = new RESPToken(key);
-            RESPToken resp_field = new RESPToken(field);
-
-            m.Add(cmd);
-            m.Add(resp_key);
-            m.Add(resp_field);           
+            m.Add(new RESPToken("HSTRLEN"));
+            m.Add(new RESPToken(key));
+            m.Add(new RESPToken(field));
 
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE hvals(String key)
         {
             RESPMaker m = new RESPMaker();
-            RESPToken cmd = new RESPToken("HVALS");
-            RESPToken resp_key = new RESPToken(key);
             
-            m.Add(cmd);
-            m.Add(resp_key);
+            m.Add(new RESPToken("HVALS"));
+            m.Add(new RESPToken(key));
 
             return Process(m);            
         }

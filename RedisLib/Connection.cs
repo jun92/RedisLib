@@ -15,58 +15,46 @@ namespace RedisLib
         }
         public REDIS_RESPONSE_TYPE auth(string password)
         {
-            RESPMaker m         = new RESPMaker();
-            RESPToken Command   = new RESPToken("AUTH");
-            RESPToken pwd       = new RESPToken(password);          
+            RESPMaker m         = new RESPMaker();           
 
-            m.Add(Command);
-            m.Add(pwd);
+            m.Add(new RESPToken("AUTH"));
+            m.Add(new RESPToken(password));
 
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE echo(string message)
         {
             RESPMaker m     = new RESPMaker();
-            RESPToken cmd   = new RESPToken("ECHO");
-            RESPToken msg   = new RESPToken(message);
 
-            m.Add(cmd);
-            m.Add(msg);
+            m.Add(new RESPToken("ECHO"));
+            m.Add(new RESPToken(message));
 
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE ping(string ping)
         {
-            RESPMaker m = new RESPMaker();
-            RESPToken cmd = new RESPToken("PING");
+            RESPMaker m = new RESPMaker();            
 
-            m.Add(cmd);                        
-            if( ping.Length != 0 )
-            {
-                RESPToken msg = new RESPToken(ping);
-                m.Add(msg);
-            }
+            m.Add(new RESPToken("PING"));
+            if( ping.Length != 0 ) m.Add(new RESPToken(ping));            
 
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE quit()
         {
-            RESPMaker m = new RESPMaker();
-            RESPToken cmd = new RESPToken("QUIT");
+            RESPMaker m = new RESPMaker();            
 
-            m.Add(cmd);
+            m.Add(new RESPToken("QUIT"));
 
             return Process(m);
         }
 
         public REDIS_RESPONSE_TYPE select(int number)
         {
-            RESPMaker m = new RESPMaker();
-            RESPToken cmd = new RESPToken("SELECT");
-            RESPToken n = new RESPToken(number.ToString());
+            RESPMaker m = new RESPMaker();            
 
-            m.Add(cmd);
-            m.Add(n);
+            m.Add(new RESPToken("SELECT"));
+            m.Add(new RESPToken(number.ToString()));
 
             return Process(m);
         }

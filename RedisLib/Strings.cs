@@ -16,15 +16,10 @@ namespace RedisLib
         }
         public REDIS_RESPONSE_TYPE Append(string key, string value)
         {
-            RESPToken resp_key = new RESPToken(key);
-            RESPToken resp_value = new RESPToken(value);
-            RESPToken Command = new RESPToken("APPEND");
             RESPMaker m = new RESPMaker();
-
-            m.Add(Command);
-            m.Add(resp_key);
-            m.Add(resp_value);
-
+            m.Add(new RESPToken("APPEND"));
+            m.Add(new RESPToken(key));
+            m.Add(new RESPToken(value));
             return Process(m);
         }
     }

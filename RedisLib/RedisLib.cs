@@ -60,6 +60,10 @@ namespace RedisLib
         {
             return new RedisConnection(_conn);
         }
+        public RedisKeys GetKeys()
+        {
+            return new RedisKeys(_conn);
+        }
     }
     public enum REDIS_RESPONSE_TYPE
     {
@@ -69,7 +73,7 @@ namespace RedisLib
         BSTRING     = 3,
         ARRAY       = 4
     }
-    public class RedisRESP2Class
+    /*public class RedisRESP2Class
     {
         public string               _error_msg;
         public int                  result_int;
@@ -141,7 +145,7 @@ namespace RedisLib
                 response_type = REDIS_RESPONSE_TYPE.ARRAY;
             }
         }
-    }
+    }*/
     /// <summary>
     /// 스트링으로 정리된 RESP와 바이트 배열간의 변환를 담당한다.
     /// </summary>
@@ -365,7 +369,11 @@ namespace RedisLib
             _tokens = new List<RESPToken>();
             _count = 0;
         }
-
+        public void Init()
+        {
+            _tokens.Clear();
+            _count = 0;
+        }
         public void Add(RESPToken token)
         {
             _tokens.Add(token);

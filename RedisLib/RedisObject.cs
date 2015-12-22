@@ -26,11 +26,11 @@ namespace RedisLib
 
         public String getString()
         {
-            return _rr.result_string; 
+            return _rr.getAsString();
         }
         public int getInt()
         {
-            return _rr.result_int;
+            return _rr.getAsInt();
         }
         public bool getHashes(ref Dictionary<String, String> dic)
         {
@@ -46,8 +46,12 @@ namespace RedisLib
         {
             _rr.getAsLists(ref list);
             return true;
+        }        
+        public bool getNestedArray(ref List<dynamic> narray)
+        {
+            _rr.getAsNestedArray(ref narray);
+            return true;
         }
-        
 
 
 

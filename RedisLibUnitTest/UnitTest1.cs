@@ -43,8 +43,32 @@ namespace RedisLibUnitTest
 
             Assert.AreEqual(0, dic.Count);
             
+        }
+        /*
+        [TestCategory("Scan Test")]
+        [TestMethod]
+        public void ScanTest()
+        {
+            List<dynamic> narray = new List<dynamic>();
+            Redis r = new Redis("192.168.184.217", 6379);
+            RedisConnection c = r.GetConnection();
+            c.select(10);
+
+            RedisKeys k = r.GetKeys();
+
+            //k.scan("2");
+            //k.getNestedArray(ref narray);
+            //int count = (int)narray[0];
+            //Assert.AreEqual(57344, count);
+            //Assert.AreEqual(11, (List<String>)narray[1].Count);
+            
+
+
+
 
             
+
         }
+         */
     }
 }
