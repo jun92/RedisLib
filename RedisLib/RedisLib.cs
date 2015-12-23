@@ -64,6 +64,10 @@ namespace RedisLib
         {
             return new RedisKeys(_conn);
         }
+        public RedisSets GetSets()
+        {
+            return new RedisSets(_conn);
+        }
     }
     public enum REDIS_RESPONSE_TYPE
     {
@@ -377,6 +381,21 @@ namespace RedisLib
         public void Add(RESPToken token)
         {
             _tokens.Add(token);
+            _count++;
+        }
+        public void Add(String token)
+        {
+            _tokens.Add(new RESPToken(token));
+            _count++;
+        }
+        public void Add(int token)
+        {
+            _tokens.Add(new RESPToken(token));
+            _count++;
+        }
+        public void Add(float token)
+        {
+            _tokens.Add(new RESPToken(token));
             _count++;
         }
         public string Make()

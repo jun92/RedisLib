@@ -61,14 +61,33 @@ namespace RedisLibUnitTest
             //int count = (int)narray[0];
             //Assert.AreEqual(57344, count);
             //Assert.AreEqual(11, (List<String>)narray[1].Count);
-            
-
-
-
-
-            
-
         }
          */
+        [TestCategory("List test")]
+        [TestMethod]
+        public void ListTest()
+        {
+            List<String> list = new List<String>();
+            Redis r = new Redis("192.168.184.217", 6379);
+            RedisConnection c = r.GetConnection();
+            c.select(3);
+
+            RedisLists l = r.GetLists();
+
+            l.lpush("listkey01", "100", "101", "102", "103");
+            l.lpop("listkey01");
+            l.getLists(ref list);
+
+            Assert.AreEqual("103", list[0].ToString());
+            
+            list.Clear();
+
+            l.rpush("listrkey01", "200", "202");
+            l.rpop("listrkey01");
+            l.getLists(ref list);
+
+            Assert.AreEqual("202", list[0].ToString());
+
+        }
     }
 }

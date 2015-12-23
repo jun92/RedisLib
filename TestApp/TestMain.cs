@@ -11,16 +11,17 @@ namespace TestApp
     {
         static void Main(string[] args)
         {
-            List<dynamic> narray = new List<dynamic>();
+            List<String> list = new List<String>();
             Redis r = new Redis("192.168.184.217", 6379);
             RedisConnection c = r.GetConnection();
-            c.select(2);
+            c.select(3);
 
-            RedisKeys k = r.GetKeys();
+            RedisLists l = r.GetLists();
 
-            k.scan("0");
-            k.getNestedArray( ref narray);
-
+            l.lpush("listkey01", "100", "101", "102", "103");
+            l.lpop("listkey01");
+            l.getLists(ref list);
+            
             
 
 
