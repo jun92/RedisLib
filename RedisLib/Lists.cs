@@ -29,12 +29,12 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
 
-            m.Add(new RESPToken("BLPOP"));
+            m.Add("BLPOP");
             foreach( String s in extra_keys)
             {
-                m.Add(new RESPToken(s));
+                m.Add(s);
             }
-            m.Add(new RESPToken(timeout.ToString()));
+            m.Add(timeout);
 
             return Process(m);
         }
@@ -42,12 +42,12 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
 
-            m.Add(new RESPToken("BRPOP"));
+            m.Add("BRPOP");
             foreach (String s in extra_keys)
             {
-                m.Add(new RESPToken(s));
+                m.Add(s);
             }
-            m.Add(new RESPToken(timeout.ToString()));
+            m.Add(timeout);
 
             return Process(m);
         }
@@ -55,57 +55,57 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
             
-            m.Add(new RESPToken("BRPOPLPUSH"));
-            m.Add(new RESPToken(src));
-            m.Add(new RESPToken(dest));
-            m.Add(new RESPToken(timeout.ToString()));
+            m.Add("BRPOPLPUSH");
+            m.Add(src);
+            m.Add(dest);
+            m.Add(timeout);
 
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE lindex(String key, int index)
         {
             RESPMaker m = new RESPMaker();
-            m.Add(new RESPToken("LINDEX"));
-            m.Add(new RESPToken(key));
-            m.Add(new RESPToken(index.ToString()));
+            m.Add("LINDEX");
+            m.Add(key);
+            m.Add(index);
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE linsert(String key, bool IsBefore, String pivot, String value)
         {
             RESPMaker m = new RESPMaker();
-            m.Add(new RESPToken("LINSERT"));
-            m.Add(new RESPToken(key));
-            if (IsBefore) m.Add(new RESPToken("BEFORE"));
-            else m.Add(new RESPToken("AFTER"));
-            m.Add(new RESPToken(pivot));
-            m.Add(new RESPToken(value));
+            m.Add("LINSERT");
+            m.Add(key);
+            if (IsBefore) m.Add("BEFORE");
+            else m.Add("AFTER");
+            m.Add(pivot);
+            m.Add(value);
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE llen(String key)
         {
             RESPMaker m = new RESPMaker();
-            m.Add(new RESPToken("LLEN"));
-            m.Add(new RESPToken(key));
+            m.Add("LLEN");
+            m.Add(key);
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE lpop(String key)
         {
             RESPMaker m = new RESPMaker();
-            m.Add(new RESPToken("LPOP"));
-            m.Add(new RESPToken(key));
+            m.Add("LPOP");
+            m.Add(key);
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE lpush(String key, String value, params String[] values)
         {
             RESPMaker m = new RESPMaker();
 
-            m.Add(new RESPToken("LPUSH"));
-            m.Add(new RESPToken(key));
-            m.Add(new RESPToken(value));
+            m.Add("LPUSH");
+            m.Add(key);
+            m.Add(value);
 
             foreach( String s in values )
             {
-                m.Add(new RESPToken(s));
+                m.Add(s);
             }
             return Process(m);
         }
@@ -113,9 +113,9 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
 
-            m.Add(new RESPToken("LPUSH"));
-            m.Add(new RESPToken(key));
-            m.Add(new RESPToken(value));
+            m.Add("LPUSH");
+            m.Add(key);
+            m.Add(value);
             
             return Process(m);
         }
@@ -123,10 +123,10 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
 
-            m.Add(new RESPToken("LRANGE"));
-            m.Add(new RESPToken(key));
-            m.Add(new RESPToken(start));
-            m.Add(new RESPToken(end));
+            m.Add("LRANGE");
+            m.Add(key);
+            m.Add(start);
+            m.Add(end);
 
             return Process(m);
         }
@@ -134,10 +134,10 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
 
-            m.Add(new RESPToken("LREM"));
-            m.Add(new RESPToken(key));
-            m.Add(new RESPToken(count.ToString()));
-            m.Add(new RESPToken(value));
+            m.Add("LREM");
+            m.Add(key);
+            m.Add(count);
+            m.Add(value);
 
             return Process(m);
         }
@@ -145,10 +145,10 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
 
-            m.Add(new RESPToken("LSET"));
-            m.Add(new RESPToken(key));
-            m.Add(new RESPToken(index.ToString()));
-            m.Add(new RESPToken(value));
+            m.Add("LSET");
+            m.Add(key);
+            m.Add(index);
+            m.Add(value);
 
             return Process(m);
         }
@@ -156,10 +156,10 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
 
-            m.Add(new RESPToken("LTRIM"));
-            m.Add(new RESPToken(key));
-            m.Add(new RESPToken(start.ToString()));
-            m.Add(new RESPToken(stop.ToString()));
+            m.Add("LTRIM");
+            m.Add(key);
+            m.Add(start);
+            m.Add(stop);
 
             return Process(m);
         }
@@ -167,8 +167,8 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
 
-            m.Add(new RESPToken("RPOP"));
-            m.Add(new RESPToken(key));
+            m.Add("RPOP");
+            m.Add(key);
 
             return Process(m);
         }
@@ -176,9 +176,9 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
 
-            m.Add(new RESPToken("RPOPLPUSH"));
-            m.Add(new RESPToken(src));
-            m.Add(new RESPToken(dest));
+            m.Add("RPOPLPUSH");
+            m.Add(src);
+            m.Add(dest);
 
             return Process(m);
         }
@@ -186,13 +186,13 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
 
-            m.Add(new RESPToken("RPUSH"));
-            m.Add(new RESPToken(key));
-            m.Add(new RESPToken(value));
+            m.Add("RPUSH");
+            m.Add(key);
+            m.Add(value);
 
             foreach( string e in values)
             {                
-                m.Add(new RESPToken(e));
+                m.Add(e);
             }
 
             return Process(m);
@@ -201,9 +201,9 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
 
-            m.Add(new RESPToken("RPUSH"));
-            m.Add(new RESPToken(key));
-            m.Add(new RESPToken(value));           
+            m.Add("RPUSH");
+            m.Add(key);
+            m.Add(value);           
 
             return Process(m);
         }

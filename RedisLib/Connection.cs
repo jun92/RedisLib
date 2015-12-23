@@ -17,8 +17,8 @@ namespace RedisLib
         {
             RESPMaker m         = new RESPMaker();           
 
-            m.Add(new RESPToken("AUTH"));
-            m.Add(new RESPToken(password));
+            m.Add("AUTH");
+            m.Add(password);
 
             return Process(m);
         }
@@ -26,8 +26,8 @@ namespace RedisLib
         {
             RESPMaker m     = new RESPMaker();
 
-            m.Add(new RESPToken("ECHO"));
-            m.Add(new RESPToken(message));
+            m.Add("ECHO");
+            m.Add(message);
 
             return Process(m);
         }
@@ -35,7 +35,7 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();            
 
-            m.Add(new RESPToken("PING"));
+            m.Add("PING");
             if( ping.Length != 0 ) m.Add(new RESPToken(ping));            
 
             return Process(m);
@@ -44,7 +44,7 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();            
 
-            m.Add(new RESPToken("QUIT"));
+            m.Add("QUIT");
 
             return Process(m);
         }
@@ -53,8 +53,8 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();            
 
-            m.Add(new RESPToken("SELECT"));
-            m.Add(new RESPToken(number.ToString()));
+            m.Add("SELECT");
+            m.Add(number);
 
             return Process(m);
         }

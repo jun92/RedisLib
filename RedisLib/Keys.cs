@@ -17,10 +17,10 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE del(params String[] keys)
         {
             RESPMaker m = new RESPMaker();            
-            m.Add(new RESPToken("DEL"));
+            m.Add("DEL");
             foreach(String s in keys)
             {                
-                m.Add(new RESPToken(s));
+                m.Add(s);
             }
             return Process(m);
         }
@@ -28,8 +28,8 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();         
 
-            m.Add(new RESPToken("DUMP"));
-            m.Add(new RESPToken(key));
+            m.Add("DUMP");
+            m.Add(key);
 
             return Process(m);
         }
@@ -37,10 +37,10 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();             
 
-            m.Add(new RESPToken("EXISTS"));
+            m.Add("EXISTS");
             foreach (String s in keys)
             {                
-                m.Add(new RESPToken(s));
+                m.Add(s);
             }
             return Process(m);
         }
@@ -48,58 +48,58 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();            
 
-            m.Add(new RESPToken("EXPIRE"));
-            m.Add(new RESPToken(key));
-            m.Add(new RESPToken(seconds.ToString()));
+            m.Add("EXPIRE");
+            m.Add(key);
+            m.Add(seconds);
 
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE expireat(String key, int unix_timestamp)
         {
             RESPMaker m = new RESPMaker(); 
-            m.Add(new RESPToken("EXPIREAT"));
-            m.Add(new RESPToken(key));
-            m.Add(new RESPToken(unix_timestamp.ToString()));
+            m.Add("EXPIREAT");
+            m.Add(key);
+            m.Add(unix_timestamp);
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE keys(String pattern)
         {
             RESPMaker m = new RESPMaker(); 
-            m.Add(new RESPToken("KEYS"));
-            m.Add(new RESPToken(pattern));
+            m.Add("KEYS");
+            m.Add(pattern);
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE migrate(String host, int port, String key, String dest_db, bool IsCopy)
         {
             RESPMaker m = new RESPMaker();
-            m.Add(new RESPToken("MIGRATE"));
-            m.Add(new RESPToken(host));
-            m.Add(new RESPToken(port.ToString()));
-            m.Add(new RESPToken(key));
-            m.Add(new RESPToken(dest_db));
-            if (IsCopy)     m.Add(new RESPToken("COPY"));
-            else            m.Add(new RESPToken("REPLACE"));
+            m.Add("MIGRATE");
+            m.Add(host);
+            m.Add(port);
+            m.Add(key);
+            m.Add(dest_db);
+            if (IsCopy)     m.Add("COPY");
+            else            m.Add("REPLACE");
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE move(String key, String db)
         {
             RESPMaker m = new RESPMaker();            
 
-            m.Add(new RESPToken("MOVE"));
-            m.Add(new RESPToken(key));
-            m.Add(new RESPToken(db));
+            m.Add("MOVE");
+            m.Add(key);
+            m.Add(db);
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE Object(String subcommand, params String[] arguments)
         {
             RESPMaker m = new RESPMaker();            
 
-            m.Add(new RESPToken("OBJECT"));
-            m.Add(new RESPToken(subcommand));
+            m.Add("OBJECT");
+            m.Add(subcommand);
 
             foreach( String argu in arguments)
             {                
-                m.Add(new RESPToken(argu));
+                m.Add(argu);
             }
             return Process(m);            
         }
@@ -107,8 +107,8 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
             
-            m.Add(new RESPToken("PERSIST"));
-            m.Add(new RESPToken(key));
+            m.Add("PERSIST");
+            m.Add(key);
 
             return Process(m);
         }
@@ -116,9 +116,9 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
 
-            m.Add(new RESPToken("PEXPIRE"));
-            m.Add(new RESPToken(key));
-            m.Add(new RESPToken(milliseconds.ToString()));
+            m.Add("PEXPIRE");
+            m.Add(key);
+            m.Add(milliseconds);
 
             return Process(m);
         }
@@ -126,9 +126,9 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
             
-            m.Add(new RESPToken("PEXPIREAT"));
-            m.Add(new RESPToken(key));
-            m.Add(new RESPToken(unixtimestamp_milliseconds.ToString()));
+            m.Add("PEXPIREAT");
+            m.Add(key);
+            m.Add(unixtimestamp_milliseconds);
 
             return Process(m);
         }
@@ -137,24 +137,24 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
             
-            m.Add(new RESPToken("PTTL"));
-            m.Add(new RESPToken(key));
+            m.Add("PTTL");
+            m.Add(key);
 
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE randomkey()
         {
             RESPMaker m = new RESPMaker();
-            m.Add(new RESPToken("RANDOMKEY"));
+            m.Add("RANDOMKEY");
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE rename(String key, String new_key)
         {
             RESPMaker m = new RESPMaker();
 
-            m.Add(new RESPToken("RENAME"));
-            m.Add(new RESPToken(key));
-            m.Add(new RESPToken(new_key));
+            m.Add("RENAME");
+            m.Add(key);
+            m.Add(new_key);
 
             return Process(m);
         }
@@ -162,9 +162,9 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
 
-            m.Add(new RESPToken("RENAMENX"));
-            m.Add(new RESPToken(key));
-            m.Add(new RESPToken(new_key));
+            m.Add("RENAMENX");
+            m.Add(key);
+            m.Add(new_key);
 
             return Process(m);
         }
@@ -172,12 +172,12 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
 
-            m.Add(new RESPToken("RESTORE"));
-            m.Add(new RESPToken(key));
-            m.Add(new RESPToken(ttl));
-            m.Add(new RESPToken(serialized_val)); 
+            m.Add("RESTORE");
+            m.Add(key);
+            m.Add(ttl);
+            m.Add(serialized_val); 
 
-            if( IsReplace) m.Add(new RESPToken("REPLACE"));
+            if( IsReplace) m.Add("REPLACE");
 
             return Process(m);
         }
@@ -186,33 +186,33 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();            
 
-            m.Add(new RESPToken("SCAN"));
-            m.Add(new RESPToken(cursor));
+            m.Add("SCAN");
+            m.Add(cursor);
 
-            if(!String.IsNullOrEmpty( pattern ))    m.Add(new RESPToken(pattern));            
-            if(!String.IsNullOrEmpty( count))       m.Add(new RESPToken(count));            
+            if(!String.IsNullOrEmpty( pattern ))    m.Add(pattern);            
+            if(!String.IsNullOrEmpty( count))       m.Add(count);            
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE ttl(String key) 
         {
             RESPMaker m = new RESPMaker();
-            m.Add(new RESPToken("TTL"));
-            m.Add(new RESPToken(key));
+            m.Add("TTL");
+            m.Add(key);
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE type(String key)
         {
             RESPMaker m = new RESPMaker();
-            m.Add(new RESPToken("TYPE"));
-            m.Add(new RESPToken(key));
+            m.Add("TYPE");
+            m.Add(key);
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE wait(int numslaves, int timeout)
         {
             RESPMaker m = new RESPMaker();
-            m.Add(new RESPToken("WAIT"));
-            m.Add(new RESPToken(numslaves.ToString()));
-            m.Add(new RESPToken(timeout.ToString()));
+            m.Add("WAIT");
+            m.Add(numslaves);
+            m.Add(timeout);
             return Process(m);
         }
     }

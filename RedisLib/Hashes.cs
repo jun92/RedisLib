@@ -72,10 +72,10 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
 
-            m.Add(new RESPToken("HINCRBYFLOAT"));
-            m.Add(new RESPToken(key));
-            m.Add(new RESPToken(field));
-            m.Add(new RESPToken(increment.ToString()));
+            m.Add("HINCRBYFLOAT");
+            m.Add(key);
+            m.Add(field);
+            m.Add(increment);
 
             return Process(m);
         }
@@ -84,8 +84,8 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
 
-            m.Add(new RESPToken("HKEYS"));
-            m.Add(new RESPToken(key));
+            m.Add("HKEYS");
+            m.Add(key);
 
             return Process(m);
         }
@@ -94,8 +94,8 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
 
-            m.Add(new RESPToken("HLEN"));
-            m.Add(new RESPToken(key));
+            m.Add("HLEN");
+            m.Add(key);
 
             return Process(m);
         }
@@ -104,12 +104,12 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
 
-            m.Add(new RESPToken("HMGET"));
-            m.Add(new RESPToken(key));
+            m.Add("HMGET");
+            m.Add(key);
 
             foreach( String s in fields )
             {                
-                m.Add(new RESPToken(s));
+                m.Add(s);
             }
             return Process(m);
         }        
@@ -117,12 +117,12 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();            
 
-            m.Add(new RESPToken(key));
+            m.Add(key);
 
             foreach( KeyValuePair<String, String> kv in fields)
             {
-                m.Add(new RESPToken(kv.Key));
-                m.Add(new RESPToken(kv.Value));
+                m.Add(kv.Key);
+                m.Add(kv.Value);
             }
             return Process(m);
         }
@@ -131,10 +131,10 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
 
-            m.Add(new RESPToken("HSET"));
-            m.Add(new RESPToken(hashname));
-            m.Add(new RESPToken(key));
-            m.Add(new RESPToken(value));
+            m.Add("HSET");
+            m.Add(hashname);
+            m.Add(key);
+            m.Add(value);
 
             return Process(m);
         }
@@ -143,10 +143,10 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
 
-            m.Add(new RESPToken("HSETNX"));
-            m.Add(new RESPToken(key));
-            m.Add(new RESPToken(field));
-            m.Add(new RESPToken(value));
+            m.Add("HSETNX");
+            m.Add(key);
+            m.Add(field);
+            m.Add(value);
 
             return Process(m);
         }
@@ -154,9 +154,9 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
 
-            m.Add(new RESPToken("HSTRLEN"));
-            m.Add(new RESPToken(key));
-            m.Add(new RESPToken(field));
+            m.Add("HSTRLEN");
+            m.Add(key);
+            m.Add(field);
 
             return Process(m);
         }
@@ -164,10 +164,22 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
             
-            m.Add(new RESPToken("HVALS"));
-            m.Add(new RESPToken(key));
+            m.Add("HVALS");
+            m.Add(key);
 
             return Process(m);            
+        }
+        public REDIS_RESPONSE_TYPE hscan(String key, String cursor, String pattern = null, String count = null)
+        {
+            RESPMaker m = new RESPMaker();
+
+            m.Add("SCAN");
+            m.Add(key);
+            m.Add(cursor);
+
+            if (!String.IsNullOrEmpty(pattern)) m.Add(pattern);
+            if (!String.IsNullOrEmpty(count)) m.Add(count);
+            return Process(m);
         }
     }
 }
