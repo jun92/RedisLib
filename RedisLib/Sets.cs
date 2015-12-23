@@ -140,11 +140,12 @@ namespace RedisLib
             }
             return Process(m);
         }
-        public REDIS_RESPONSE_TYPE sscan(String cursor, String pattern = null , String count = null )
+        public REDIS_RESPONSE_TYPE sscan(String key, String cursor, String pattern = null , String count = null )
         {
             RESPMaker m = new RESPMaker();
 
             m.Add("SSCAN");
+            m.Add(key);
             m.Add(cursor);
 
             if (!String.IsNullOrEmpty(pattern)) m.Add(pattern);

@@ -8,8 +8,22 @@ namespace Syncnet
 {
 namespace RedisLib
 {
+
     public class RedisStrings : RedisObject
     {
+        public enum STRING_BITOP_TYPE
+        {
+            AND = 0,
+            OR = 1,
+            XOR = 2,
+            NOT = 3
+        }
+        public enum STRING_SET_TYPE
+        {
+            NONE = 0,
+            NX = 1,
+            XX = 2
+        }
         
         public RedisStrings(RedisConnManager conn) : base(conn)
         {            
@@ -34,20 +48,19 @@ namespace RedisLib
                 m.Add(new RESPToken(end.ToString()));
             }
             return Process(m);
-        }        
-        public REDIS_RESPONSE_TYPE bitop(String op, String destkey, String key, params String[] keys)
-        {
-            op = op.ToLower();
-            if( 0 != op.CompareTo("and") &&
-                0 != op.CompareTo("or") &&
-                0 != op.CompareTo("xor") &&
-                0 != op.CompareTo("not") )
-            {
-                return REDIS_RESPONSE_TYPE.ERROR;
-            }
+        }
+        public REDIS_RESPONSE_TYPE bitop(STRING_BITOP_TYPE op, String destkey, String key, params String[] keys)
+        {            
             RESPMaker m = new RESPMaker();
             m.Add(new RESPToken("BITOP"));
-            m.Add(new RESPToken(op));
+
+            switch( op )
+            {
+                case STRING_BITOP_TYPE.AND: m.Add("AND"); break;
+                case STRING_BITOP_TYPE.NOT: m.Add("NOT"); break;
+                case STRING_BITOP_TYPE.OR: m.Add("OR"); break;
+                case STRING_BITOP_TYPE.XOR: m.Add("XOR"); break;
+            }            
             m.Add(new RESPToken(destkey));
             m.Add(new RESPToken(key));
             foreach(String s in keys)
@@ -216,14 +229,8 @@ namespace RedisLib
             m.Add(new RESPToken(value));
             return Process(m);
         }
-        public REDIS_RESPONSE_TYPE set(String key, String value, int sec = 0, int millisec = 0, String IsExist = null)
+        public REDIS_RESPONSE_TYPE set(String key, String value, int sec = 0, int millisec = 0, STRING_SET_TYPE IsExist = STRING_SET_TYPE.NONE)
         {
-            if( !String.IsNullOrEmpty ( IsExist ))
-            { 
-                if (0 != IsExist.ToLower().CompareTo("NX") &&
-                    0 != IsExist.ToLower().CompareTo("XX")) return REDIS_RESPONSE_TYPE.ERROR;
-            }
-
             RESPMaker m = new RESPMaker();
             m.Add(new RESPToken("SET"));
             m.Add(new RESPToken(key));
@@ -238,10 +245,11 @@ namespace RedisLib
                 m.Add(new RESPToken("PX"));
                 m.Add(new RESPToken(millisec.ToString()));
             }
-            if (!String.IsNullOrEmpty(IsExist))
+            switch( IsExist )
             {
-                m.Add(new RESPToken(IsExist));
-            }
+                case STRING_SET_TYPE.NX: m.Add("NX"); break;
+                case STRING_SET_TYPE.XX: m.Add("XX"); break;
+            }            
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE setbit(String key, int offset, bool set)

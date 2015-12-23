@@ -17,11 +17,11 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
 
-            m.Add(new RESPToken("HDEL"));
-            m.Add(new RESPToken(key));
-            m.Add(new RESPToken(field));
+            m.Add("HDEL");
+            m.Add(key);
+            m.Add(field);
             
-            if (value.Length != 0) m.Add(new RESPToken(value));            
+            if (value.Length != 0) m.Add(value);
             return Process(m);
         }
 
@@ -29,9 +29,9 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
 
-            m.Add(new RESPToken("HEXISTS"));
-            m.Add(new RESPToken(key));
-            m.Add(new RESPToken(field));
+            m.Add("HEXISTS");
+            m.Add(key);
+            m.Add(field);
 
             return Process(m);
         }
@@ -40,9 +40,9 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
 
-            m.Add(new RESPToken("HGET"));
-            m.Add(new RESPToken(key));
-            m.Add(new RESPToken(field));
+            m.Add("HGET");
+            m.Add(key);
+            m.Add(field);
 
             return Process(m);
         }
@@ -50,8 +50,8 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
             
-            m.Add(new RESPToken("HGETALL"));
-            m.Add(new RESPToken(hashname));
+            m.Add("HGETALL");
+            m.Add(hashname);
 
             return Process(m);
         }
@@ -60,10 +60,10 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
             
-            m.Add(new RESPToken("HINCRBY"));
-            m.Add(new RESPToken(key));
-            m.Add(new RESPToken(field));
-            m.Add(new RESPToken(increment.ToString()));
+            m.Add("HINCRBY");
+            m.Add(key);
+            m.Add(field);
+            m.Add(increment);
 
             return Process(m);
         }
