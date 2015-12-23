@@ -75,7 +75,8 @@ namespace RedisLib
         INT         = 1,
         SSTRING     = 2,
         BSTRING     = 3,
-        ARRAY       = 4
+        ARRAY       = 4,
+        NOT_IMPLEMENTED = 5 // not implemented yet.
     }
     /*public class RedisRESP2Class
     {
