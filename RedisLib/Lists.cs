@@ -119,14 +119,14 @@ namespace RedisLib
             
             return Process(m);
         }
-        public REDIS_RESPONSE_TYPE lrange(String key, String start, String end)
+        public REDIS_RESPONSE_TYPE lrange(String key, int start, int end)
         {
             RESPMaker m = new RESPMaker();
 
             m.Add("LRANGE");
             m.Add(key);
-            m.Add(start);
-            m.Add(end);
+            m.Add(start.ToString());
+            m.Add(end.ToString());
 
             return Process(m);
         }

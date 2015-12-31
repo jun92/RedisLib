@@ -100,7 +100,7 @@ namespace RedisLib
         public void parse(String RESP)
         {
             result_nested.Clear();
-            response_type = parse_recursive(ref RESP, ref result_nested);           
+            response_type = parse_recursive(ref RESP, ref result_nested);
         }
         public REDIS_RESPONSE_TYPE parse_recursive(ref String p, ref List<dynamic> retval)
         {
@@ -122,14 +122,15 @@ namespace RedisLib
 
                 for (int i = 0; i < array_size; i++)
                 {
-                    if (tokens[1].StartsWith(":")) retval.Add(getInteger(ref tokens[1]));
-                    if (tokens[1].StartsWith("+")) retval.Add(getSString(ref tokens[1]));
-                    if (tokens[1].StartsWith("$")) retval.Add(getBString(ref tokens[1]));
+                    if (tokens[1].StartsWith(":")) { retval.Add(getInteger(ref tokens[1])); continue; }
+                    if (tokens[1].StartsWith("+")) { retval.Add(getSString(ref tokens[1])); continue; }
+                    if (tokens[1].StartsWith("$")) { retval.Add(getBString(ref tokens[1])); continue; }
                     if (tokens[1].StartsWith("*"))
                     {
                         List<dynamic> node = new List<dynamic>();
                         parse_recursive(ref tokens[1], ref node);
                         retval.Add(node);
+                        continue;
                     }
                 }
                 p = tokens[1];

@@ -54,7 +54,7 @@ namespace RedisLib
             RESPMaker m = new RESPMaker();            
 
             m.Add("SELECT");
-            m.Add(number);
+            m.Add(number.ToString());
 
             return Process(m);
         }
