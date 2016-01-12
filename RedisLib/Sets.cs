@@ -9,7 +9,7 @@ namespace RedisLib
 {
     public class RedisSets : RedisObject
     {
-        public RedisSets(RedisConnManager conn) : base(conn)
+        public RedisSets(RedisAsyncConnManager conn) : base(conn)
         {
         }
         public REDIS_RESPONSE_TYPE sadd(String key, String member, params String[] members)

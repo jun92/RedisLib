@@ -18,6 +18,7 @@ namespace TestApp
 
             Redis r = new Redis("192.168.184.217", 6379);
             
+            
             RedisConnection c = r.GetConnection();
             ret = c.select(10);
             if( ret == REDIS_RESPONSE_TYPE.ERROR)
@@ -27,20 +28,18 @@ namespace TestApp
             }
 
             RedisLists l = r.GetLists();
-            /*
-            for (int i = 0; i < 10000; i++)
+            
+            /*for (int i = 0; i < 10000; i++)
             {
                 l.lpush("longlist", "list" + i.ToString());
-            }
-             * */
-
-
-            
-            l.lrange("longlist", 0, -1);
+            }*/
             
 
+
             
+            l.lrange("longlist", 100, 150);
             l.getLists(ref li);
+            
             
 
             

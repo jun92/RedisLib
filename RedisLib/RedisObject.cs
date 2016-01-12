@@ -10,10 +10,12 @@ namespace RedisLib
 {
     public class RedisObject
     {
-        private RedisConnManager _conn;
+        
+        private RedisAsyncConnManager _conn; 
         private RedisRESP2Class _rr;
 
-        public RedisObject(RedisConnManager conn)
+        
+        public RedisObject(RedisAsyncConnManager conn)
         {
             this._conn = conn;
             _rr = new RedisRESP2Class();

@@ -9,7 +9,7 @@ namespace RedisLib
 {
     public class RedisClusterSupport : RedisObject
     {
-        public RedisClusterSupport(RedisConnManager conn) : base(conn)
+        public RedisClusterSupport(RedisAsyncConnManager conn) : base(conn)
         {
 
         }

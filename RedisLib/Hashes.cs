@@ -10,7 +10,7 @@ namespace RedisLib
 {
     public class RedisHashes : RedisObject 
     {        
-        public RedisHashes(RedisConnManager conn) : base (conn)
+        public RedisHashes(RedisAsyncConnManager conn) : base (conn)
         {
         }
         public REDIS_RESPONSE_TYPE hdel(string key, string field, string value)

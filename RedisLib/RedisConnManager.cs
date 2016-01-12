@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Net;
 using System.Net.Sockets;
 using System.IO; 
@@ -78,7 +78,7 @@ namespace RedisLib
         {
             byte[] recv_buffer = new byte[NET_RECV_SIZE];
             int recvBytes;
-            bool bFirst = true;
+            //bool bFirst = true;
 
             NetRecvBuffer rb = new NetRecvBuffer();
             RedisSerializer rs = new RedisSerializer();
@@ -90,10 +90,9 @@ namespace RedisLib
                 rb.Add(recv_buffer, recvBytes);
                 //Console.WriteLine("Available:{0}", _conn.Available);
 
-                // if it returns large set of data(>4k), this loop runs too fast to read all the data from redis server. 
-                // so I force to make a little delay while doing this. 
-                if (bFirst) bFirst = false;
-                else System.Threading.Thread.Sleep(1);
+                
+                //if (bFirst) bFirst = false;
+                //else System.Threading.Thread.Sleep(1);
 
             } while (_conn.Available != 0);
 
@@ -107,6 +106,9 @@ namespace RedisLib
             Recv();
             return _RecvString;
         }
+
+
     }
+    
 }
 }

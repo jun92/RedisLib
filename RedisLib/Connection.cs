@@ -10,7 +10,7 @@ namespace RedisLib
     public class RedisConnection : RedisObject
     {
 
-        public RedisConnection(RedisConnManager conn) : base( conn) 
+        public RedisConnection(RedisAsyncConnManager conn) : base( conn) 
         { 
         }
         public REDIS_RESPONSE_TYPE auth(string password)

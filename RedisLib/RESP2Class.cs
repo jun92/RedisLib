@@ -138,7 +138,79 @@ namespace RedisLib
             }
             return REDIS_RESPONSE_TYPE.ERROR;
         }
+        public bool IsCompletedPacket(String buffer)
+        {            
+            String RESP = buffer;             
+            return IsRESPTokenCompleted(ref RESP);
+        }
+        public bool IsRESPTokenCompleted(ref String buffer)
+        {
+            if (buffer.StartsWith(":")) { return buffer.IndexOf("\r\n") == -1 ? false : true; } // integer 
+            if (buffer.StartsWith("-")) { return buffer.IndexOf("\r\n") == -1 ? false : true; } // error 
+            if (buffer.StartsWith("+")) { return buffer.IndexOf("\r\n") == -1 ? false : true; } // simple string (길이 정보가 없음) 
+            if (buffer.StartsWith("$")) 
+            { 
+                int pos; 
+                if( -1 != (pos =  buffer.IndexOf("\r\n")) )
+                {
+                    if( -1 == buffer.IndexOf("\r\n", pos+2) ) return false;                    
+                    else return true;
+                }
+                else return false;
+            } // bulk string (길이가 있는) 
+            if (buffer.StartsWith("*")) 
+            {
+                int i;
+                String[] d = {"\r\n"};
+                String[] tokens = buffer.Split(d, 2, StringSplitOptions.None);
+                int arrayCount = int.Parse( tokens[0].Substring(1));
+
+                buffer = tokens[1];
+
+                if (arrayCount == 0) return true;
+
+                for( i = 0; i < arrayCount; i ++ )
+                {
+                    if (buffer.StartsWith(":") && buffer.IndexOf("\r\n") == -1)
+                    {
+                        buffer = buffer.Substring(buffer.IndexOf("\r\n"));
+                        return false;
+                    }
+                    if (buffer.StartsWith("-") && buffer.IndexOf("\r\n") == -1)
+                    {
+                        buffer = buffer.Substring(buffer.IndexOf("\r\n"));
+                        return false;
+                    }
+                    if (buffer.StartsWith("+") && buffer.IndexOf("\r\n") == -1)
+                    {
+                        buffer = buffer.Substring(buffer.IndexOf("\r\n"));
+                        return false;
+                    }
+                    if( buffer.StartsWith("$"))
+                    {
+                        if (i == 9990) { int k = 0; }
+                        // \r\n으로 구분되는 길이:데이타가 있어야한다. 
+                        int pos;
+                        if( -1 == (pos = buffer.IndexOf("\r\n"))) return false;
+                        buffer = buffer.Substring(buffer.IndexOf("\r\n") + 2);
+                        if (-1 == (pos = buffer.IndexOf("\r\n"))) return false;
+                        buffer = buffer.Substring(buffer.IndexOf("\r\n")+2);
+
+                    }
+                    if( buffer.StartsWith("*"))
+                    {
+                        if( ! IsRESPTokenCompleted(ref buffer) ) return false; 
+                    }
+                    if (buffer.Length == 0) break;
+                }
+                
+                if (i+1 != arrayCount) return false;
+            } // 배열 
+            return true;
+        }
     }
+
+
     
 }
 

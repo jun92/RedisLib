@@ -10,7 +10,7 @@ namespace RedisLib
 {
     public class RedisKeys : RedisObject
     {
-        public RedisKeys(RedisConnManager conn)
+        public RedisKeys(RedisAsyncConnManager conn)
             : base(conn)
         {            
         }

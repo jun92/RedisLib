@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsyncObject.cs" />
     <Compile Include="ClusterInfo.cs" />
     <Compile Include="ClusterSupport.cs" />
     <Compile Include="Connection.cs" />
@@ -48,6 +49,7 @@
     <Compile Include="Keys.cs" />
     <Compile Include="Lists.cs" />
     <Compile Include="NetRecvBuffer.cs" />
+    <Compile Include="RedisAsyncConnManager.cs" />
     <Compile Include="RedisConnManager.cs" />
     <Compile Include="RedisEnums.cs" />
     <Compile Include="RedisLib.cs" />

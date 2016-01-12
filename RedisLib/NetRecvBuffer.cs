@@ -10,7 +10,7 @@ namespace RedisLib
     /// <summary>
     /// 네트워크로부터 받은 데이타를 저장하기 위한 가변 byte배열 관리 클래스 
     /// </summary>
-    class NetRecvBuffer
+    public class NetRecvBuffer
     {
         /// <summary>
         /// 내용을 저장할 버퍼 

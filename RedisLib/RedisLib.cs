@@ -13,7 +13,8 @@ namespace RedisLib
     /// <summary>레디스 기본 클래스(메인)</summary>
     public class Redis
     {
-        public RedisConnManager _conn;
+        
+        public RedisAsyncConnManager _conn;
         public String _error_msg;
         /// <param name="ip">Redis서버 주소</param>
         /// <param name="port">Redis서버 포트</param>
@@ -21,7 +22,8 @@ namespace RedisLib
         /// <return>없음</return>        
         public Redis(string ip, int port, string auth = "")
         {
-            _conn = new RedisConnManager(ip, port, auth);
+            //_conn = new RedisConnManager(ip, port, auth);
+            _conn = new RedisAsyncConnManager(ip, port);
 
             if (!_conn.Connect())
             {
@@ -29,12 +31,12 @@ namespace RedisLib
                 return;
             }
 
-            RedisClusterSupport rcs = new RedisClusterSupport(_conn);
-            rcs.ConstructClusterConfigInfo();
+            //RedisClusterSupport rcs = new RedisClusterSupport(_conn);
+            //rcs.ConstructClusterConfigInfo();
         }
         public bool reconn(String ip, int port, string auth = "")
         {
-            _conn = new RedisConnManager(ip, port, auth);
+            _conn = new RedisAsyncConnManager(ip, port, auth);
             if( !_conn.Connect())
             {
                 _error_msg = _conn._error_msg;

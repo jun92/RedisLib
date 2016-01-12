@@ -25,7 +25,7 @@ namespace RedisLib
             XX = 2
         }
         
-        public RedisStrings(RedisConnManager conn) : base(conn)
+        public RedisStrings(RedisAsyncConnManager conn) : base(conn)
         {            
         }
         public REDIS_RESPONSE_TYPE append(string key, string value)

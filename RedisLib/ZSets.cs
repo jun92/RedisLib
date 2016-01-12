@@ -25,7 +25,7 @@ namespace RedisLib
             INCR = 8
         }
 
-        public RedisZSets(RedisConnManager conn)
+        public RedisZSets(RedisAsyncConnManager conn)
             : base(conn)
         {
         }

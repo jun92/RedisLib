@@ -13,7 +13,7 @@ namespace RedisLib
     public class RedisLists : RedisObject 
     {
            
-        public RedisLists(RedisConnManager conn) : base(conn)
+        public RedisLists(RedisAsyncConnManager conn) : base(conn)
         {
         }
         /// <summary>

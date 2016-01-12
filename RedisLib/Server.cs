@@ -9,7 +9,7 @@ namespace RedisLib
 {
     public class RedisServer : RedisObject
     {
-        public RedisServer(RedisConnManager conn) : base(conn)
+        public RedisServer(RedisAsyncConnManager conn) : base(conn)
         {
         }
         public REDIS_RESPONSE_TYPE bgrewriteaof()
