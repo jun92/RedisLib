@@ -63,7 +63,7 @@ namespace RedisLib
             m.Add("HINCRBY");
             m.Add(key);
             m.Add(field);
-            m.Add(increment);
+            m.Add(increment.ToString());
 
             return Process(m);
         }
@@ -75,7 +75,7 @@ namespace RedisLib
             m.Add("HINCRBYFLOAT");
             m.Add(key);
             m.Add(field);
-            m.Add(increment);
+            m.Add(increment.ToString());
 
             return Process(m);
         }

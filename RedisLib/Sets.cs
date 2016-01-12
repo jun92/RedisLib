@@ -113,7 +113,7 @@ namespace RedisLib
             m.Add(key);
             if( count != 0 )
             {
-                m.Add(count);
+                m.Add(count.ToString());
             }
             return Process(m);
         }
@@ -124,7 +124,7 @@ namespace RedisLib
             m.Add(key);
             if (count != 0)
             {
-                m.Add(count);
+                m.Add(count.ToString());
             }
             return Process(m);
         }

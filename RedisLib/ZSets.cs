@@ -93,9 +93,9 @@ namespace RedisLib
             m.Add("ZCOUNT");
             m.Add(key);
             if (min == 0) m.Add("-inf");
-            else m.Add(min);
+            else m.Add(min.ToString());
             if (max == 0) m.Add("+inf");
-            else m.Add(max);
+            else m.Add(max.ToString());
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE zincrby(String key, int increment, String member)
@@ -103,7 +103,7 @@ namespace RedisLib
             RESPMaker m = new RESPMaker();
             m.Add("ZINCRBY");
             m.Add(key);
-            m.Add(increment);
+            m.Add(increment.ToString());
             m.Add(member);
             return Process(m);
         }
@@ -158,8 +158,8 @@ namespace RedisLib
 
             m.Add("ZRANGE");
             m.Add(key);
-            m.Add(start);
-            m.Add(stop);
+            m.Add(start.ToString());
+            m.Add(stop.ToString());
             if (IsWithScore) m.Add("WITHSCORES");
 
             return Process(m);
@@ -177,8 +177,8 @@ namespace RedisLib
             if( offset != 0 && count != 0 )
             {
                 m.Add("LIMIT");
-                m.Add(offset);
-                m.Add(count);
+                m.Add(offset.ToString());
+                m.Add(count.ToString());
             }
             return Process(m);
         }
@@ -198,8 +198,8 @@ namespace RedisLib
             if (offset != 0 && count != 0)
             {
                 m.Add("LIMIT");
-                m.Add(offset);
-                m.Add(count);
+                m.Add(offset.ToString());
+                m.Add(count.ToString());
             }
             return Process(m);
         }
@@ -237,8 +237,8 @@ namespace RedisLib
             RESPMaker m = new RESPMaker();
             m.Add("ZREMRANGEBYRANK");
             m.Add(key);
-            m.Add(start);
-            m.Add(stop);
+            m.Add(start.ToString());
+            m.Add(stop.ToString());
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE zremrangebyscore(String key, String min, String max)
@@ -256,8 +256,8 @@ namespace RedisLib
             RESPMaker m = new RESPMaker();
             m.Add("ZREVRANGE");
             m.Add(key);
-            m.Add(start);
-            m.Add(stop);
+            m.Add(start.ToString());
+            m.Add(stop.ToString());
             if (IsWithScores) m.Add("WITHSCORES");
             return Process(m);
         }
@@ -274,8 +274,8 @@ namespace RedisLib
             if (offset != 0 && count != 0)
             {
                 m.Add("LIMIT");
-                m.Add(offset);
-                m.Add(count);
+                m.Add(offset.ToString());
+                m.Add(count.ToString());
             }
             return Process(m);
         }
@@ -295,8 +295,8 @@ namespace RedisLib
             if (offset != 0 && count != 0)
             {
                 m.Add("LIMIT");
-                m.Add(offset);
-                m.Add(count);
+                m.Add(offset.ToString());
+                m.Add(count.ToString());
             }
             return Process(m);
         }
@@ -346,8 +346,8 @@ namespace RedisLib
             if (weights.Count > 0) m.Add("WEIGHTS");
 
             foreach( int weight in weights)
-            {                
-                m.Add(weight);
+            {
+                m.Add(weight.ToString());
             }
             return Process(m);
         }

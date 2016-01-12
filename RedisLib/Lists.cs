@@ -34,7 +34,7 @@ namespace RedisLib
             {
                 m.Add(s);
             }
-            m.Add(timeout);
+            m.Add(timeout.ToString());
 
             return Process(m);
         }
@@ -47,7 +47,7 @@ namespace RedisLib
             {
                 m.Add(s);
             }
-            m.Add(timeout);
+            m.Add(timeout.ToString());
 
             return Process(m);
         }
@@ -58,7 +58,7 @@ namespace RedisLib
             m.Add("BRPOPLPUSH");
             m.Add(src);
             m.Add(dest);
-            m.Add(timeout);
+            m.Add(timeout.ToString());
 
             return Process(m);
         }
@@ -67,7 +67,7 @@ namespace RedisLib
             RESPMaker m = new RESPMaker();
             m.Add("LINDEX");
             m.Add(key);
-            m.Add(index);
+            m.Add(index.ToString());
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE linsert(String key, bool IsBefore, String pivot, String value)
@@ -136,7 +136,7 @@ namespace RedisLib
 
             m.Add("LREM");
             m.Add(key);
-            m.Add(count);
+            m.Add(count.ToString());
             m.Add(value);
 
             return Process(m);
@@ -147,7 +147,7 @@ namespace RedisLib
 
             m.Add("LSET");
             m.Add(key);
-            m.Add(index);
+            m.Add(index.ToString());
             m.Add(value);
 
             return Process(m);
@@ -158,8 +158,8 @@ namespace RedisLib
 
             m.Add("LTRIM");
             m.Add(key);
-            m.Add(start);
-            m.Add(stop);
+            m.Add(start.ToString());
+            m.Add(stop.ToString());
 
             return Process(m);
         }

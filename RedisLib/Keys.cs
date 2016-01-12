@@ -50,7 +50,7 @@ namespace RedisLib
 
             m.Add("EXPIRE");
             m.Add(key);
-            m.Add(seconds);
+            m.Add(seconds.ToString());
 
             return Process(m);
         }
@@ -59,7 +59,7 @@ namespace RedisLib
             RESPMaker m = new RESPMaker(); 
             m.Add("EXPIREAT");
             m.Add(key);
-            m.Add(unix_timestamp);
+            m.Add(unix_timestamp.ToString());
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE keys(String pattern)
@@ -74,7 +74,7 @@ namespace RedisLib
             RESPMaker m = new RESPMaker();
             m.Add("MIGRATE");
             m.Add(host);
-            m.Add(port);
+            m.Add(port.ToString());
             m.Add(key);
             m.Add(dest_db);
             if (IsCopy)     m.Add("COPY");
@@ -118,7 +118,7 @@ namespace RedisLib
 
             m.Add("PEXPIRE");
             m.Add(key);
-            m.Add(milliseconds);
+            m.Add(milliseconds.ToString());
 
             return Process(m);
         }
@@ -211,8 +211,8 @@ namespace RedisLib
         {
             RESPMaker m = new RESPMaker();
             m.Add("WAIT");
-            m.Add(numslaves);
-            m.Add(timeout);
+            m.Add(numslaves.ToString());
+            m.Add(timeout.ToString());
             return Process(m);
         }
     }

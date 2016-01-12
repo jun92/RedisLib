@@ -88,7 +88,7 @@ namespace RedisLib
             RESPMaker m = new RESPMaker();
             m.Add(new RESPToken("DECRBY"));
             m.Add(new RESPToken(key));
-            m.Add(new RESPToken(decrement));
+            m.Add(new RESPToken(decrement.ToString()));
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE get(String key)
@@ -135,7 +135,7 @@ namespace RedisLib
             RESPMaker m = new RESPMaker();
             m.Add(new RESPToken("INCRBY"));
             m.Add(new RESPToken(key));
-            m.Add(new RESPToken(increment));
+            m.Add(new RESPToken(increment.ToString()));
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE incrbyfloat(String key, float increment)
@@ -143,7 +143,7 @@ namespace RedisLib
             RESPMaker m = new RESPMaker();
             m.Add(new RESPToken("INCRBYFLOAT"));
             m.Add(new RESPToken(key));
-            m.Add(new RESPToken(increment));
+            m.Add(new RESPToken(increment.ToString()));
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE mget(String key, params String[] keys)

@@ -187,8 +187,7 @@ namespace RedisLib
                         return false;
                     }
                     if( buffer.StartsWith("$"))
-                    {
-                        if (i == 9990) { int k = 0; }
+                    {                        
                         // \r\n으로 구분되는 길이:데이타가 있어야한다. 
                         int pos;
                         if( -1 == (pos = buffer.IndexOf("\r\n"))) return false;

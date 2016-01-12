@@ -47,7 +47,7 @@ namespace RedisLib
             RESPMaker m = new RESPMaker();
             m.Add("CLIENT");
             m.Add("PAUSE");
-            m.Add(timeout);
+            m.Add(timeout.ToString());
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE clientsetname(String conn_name)
@@ -199,7 +199,7 @@ namespace RedisLib
 
             m.Add("SLAVEOF");
             m.Add(host);
-            m.Add(port);
+            m.Add(port.ToString());
 
             return Process(m);
         }
