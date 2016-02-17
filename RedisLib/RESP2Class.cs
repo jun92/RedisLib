@@ -15,13 +15,11 @@ namespace RedisLib
         public List<String> result_array;
         public List<dynamic> result_nested;
         public REDIS_RESPONSE_TYPE response_type;
-
         public RedisRESP2Class()
         {
             result_array = new List<String>();
             result_nested = new List<dynamic>();
         }
-
         public void getAsDictionary(ref Dictionary<String, String> dic)
         {
 
@@ -42,31 +40,31 @@ namespace RedisLib
         }
         public void getAsNestedArray(ref List<dynamic> narray)
         {
-            narray = result_nested;
-            
+            narray = result_nested;            
         }
         public String getAsString()
         {
             if (result_nested.Count != 1) return "";
             return result_nested[0].ToString();
-
         }
         public int getAsInt()
         {
             if (result_nested.Count != 1) return 0;
             return result_nested[0];
         }
-
         private int getInteger(ref String token)
         {
             char[] d = { '\n' };
+
+            //if (-1 == token.IndexOf('\n')) return (int)REDIS_RESPONSE_TYPE.NOT_ENOUGH_DATA;
             String[] t = token.Split(d, 2);
-            token = t[1];
+            token = t[1]; // 이미 처리한 스트링은 빼버리고 나머지 부분을 남겨준다. 
             return int.Parse(t[0].Substring(1));
         }
         private String getLiteral(ref String token)
         {
             char[] d = { '\n' };
+            
             String[] t = token.Split(d, 2);
             token = t[1];
             return t[0].Substring(1);
@@ -74,7 +72,6 @@ namespace RedisLib
         private String getSString(ref String token)
         {
             return getLiteral(ref token);
-
         }
         private String getBString(ref String token)
         {
@@ -132,6 +129,97 @@ namespace RedisLib
                         retval.Add(node);
                         continue;
                     }
+                }
+                p = tokens[1];
+                return REDIS_RESPONSE_TYPE.ARRAY;
+            }
+            return REDIS_RESPONSE_TYPE.ERROR;
+        }
+        public REDIS_RESPONSE_TYPE parseR(String RESP)
+        {
+            result_nested.Clear();
+            response_type = parse_recursiveR(ref RESP, ref result_nested);
+            return response_type;
+        }
+        public REDIS_RESPONSE_TYPE parse_recursiveR(ref String p, ref List<dynamic> retval)
+        {
+            p = p.Replace("\r", "");
+
+            if (p.StartsWith(":")) 
+            {
+                if (-1 == p.IndexOf('\n')) return REDIS_RESPONSE_TYPE.NOT_ENOUGH_DATA;
+                retval.Add(getInteger(ref p)); 
+                return REDIS_RESPONSE_TYPE.INT; 
+            } // int이므로 
+            if (p.StartsWith("+")) 
+            {
+                if (-1 == p.IndexOf('\n')) return REDIS_RESPONSE_TYPE.NOT_ENOUGH_DATA;
+                retval.Add(getSString(ref p)); 
+                return REDIS_RESPONSE_TYPE.SSTRING; 
+            }// String 
+            if (p.StartsWith("-")) 
+            {
+                if (-1 == p.IndexOf('\n')) return REDIS_RESPONSE_TYPE.NOT_ENOUGH_DATA;
+                retval.Add(getError(ref p)); 
+                return REDIS_RESPONSE_TYPE.ERROR; 
+            }  // error 
+            if (p.StartsWith("$")) 
+            { 
+                // \n이 두개가 있어야한다. 
+                int pos;
+
+                if (-1 != (pos = p.IndexOf('\n')) && -1 != p.IndexOf('\n', pos + 1))
+                {
+                    retval.Add(getBString(ref p));
+                    return REDIS_RESPONSE_TYPE.BSTRING;
+                }
+                else return REDIS_RESPONSE_TYPE.NOT_ENOUGH_DATA;
+            } // String 
+            if (p.StartsWith("*"))
+            {
+                // 배열이라면 배열 갯수를 구해
+                // 배열 갯수 만큼 반복하며 
+                int array_size;
+                char[] d = { '\n' };
+
+                if (-1 == p.IndexOf('\n')) return REDIS_RESPONSE_TYPE.NOT_ENOUGH_DATA;
+
+                String[] tokens = p.Split(d, 2); // tokens[0]에 갯수, tokens[1]에 데이타가 있다. 
+                array_size = int.Parse(tokens[0].Substring(1)); // *표 제거후 숫자로 변경 
+
+                for (int i = 0; i < array_size; i++)
+                {
+                    if (tokens[1].StartsWith(":"))
+                    {
+                        if (-1 == tokens[1].IndexOf('\n')) return REDIS_RESPONSE_TYPE.NOT_ENOUGH_DATA;
+                        retval.Add(getInteger(ref tokens[1]));
+                        continue;
+                    }
+                    else if (tokens[1].StartsWith("+"))
+                    {
+                        if (-1 == tokens[1].IndexOf('\n')) return REDIS_RESPONSE_TYPE.NOT_ENOUGH_DATA;
+                        retval.Add(getSString(ref tokens[1]));
+                        continue;
+                    }
+                    else if (tokens[1].StartsWith("$"))
+                    {
+                        int pos;
+
+                        if (-1 != (pos = tokens[1].IndexOf('\n')) && -1 != tokens[1].IndexOf('\n', pos + 1))
+                        {
+                            retval.Add(getBString(ref tokens[1]));
+                            continue;
+                        }
+                        else return REDIS_RESPONSE_TYPE.NOT_ENOUGH_DATA;
+                    }
+                    else if (tokens[1].StartsWith("*"))
+                    {
+                        List<dynamic> node = new List<dynamic>();
+                        parse_recursive(ref tokens[1], ref node);
+                        retval.Add(node);
+                        continue;
+                    }
+                    else return REDIS_RESPONSE_TYPE.NOT_ENOUGH_DATA;
                 }
                 p = tokens[1];
                 return REDIS_RESPONSE_TYPE.ARRAY;

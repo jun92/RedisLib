@@ -37,7 +37,7 @@ namespace TestApp
 
 
             
-            l.lrange("longlist", 100, 150);
+            l.lrange("longlist", 0, -1);
             l.getLists(ref li);
             
             

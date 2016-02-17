@@ -10,8 +10,7 @@ using System.IO;
 namespace Syncnet
 { 
 namespace RedisLib
-{
-    
+{    
     public class RedisAsyncConnManager
     {
         public const int NET_RECV_SIZE = 4096;
@@ -114,74 +113,70 @@ namespace RedisLib
             {
                 String em = e.Message;
             }
-        }
-
-        public bool Recv()
+        }        
+        public bool Recv(ref RedisRESP2Class rr)
         {
             AsyncPassParamRecv param = new AsyncPassParamRecv();
 
             param.AllocBuffer(NET_RECV_SIZE);
             param.SetSocket(_conn);
+            param.SetRedisRESP(ref rr);
 
             try
             {
                 _conn.BeginReceive(
-                    param.data_in, 
-                    0, 
-                    NET_RECV_SIZE, 
-                    SocketFlags.None, 
-                    new AsyncCallback(OnCompletedReceive), 
+                    param.data_in,
+                    0,
+                    NET_RECV_SIZE,
+                    SocketFlags.None,
+                    new AsyncCallback(OnCompletedReceive),
                     param);
                 param.wait();
-
-                RedisSerializer rs = new RedisSerializer();
-                rs.Deserialize(param.rb.GetBuffer(), param.rb.GetSize(), ref _RecvString);
-                
             }
-            catch(SocketException e )
+            catch (SocketException e)
             {
                 String em = e.Message;
-
             }
             return true;
-        }
-        
+        }        
         private void OnCompletedReceive(IAsyncResult IAR)
         {
-            NetRecvBuffer rb                = new NetRecvBuffer();
-            RedisSerializer rs              = new RedisSerializer();
-            AsyncPassParamRecv param        = new AsyncPassParamRecv();
-            RedisRESP2Class rr_for_check    = new RedisRESP2Class();
-            try 
-            {   
+            NetRecvBuffer rb = new NetRecvBuffer();
+            RedisSerializer rs = new RedisSerializer();
+            AsyncPassParamRecv param = new AsyncPassParamRecv();            
+            try
+            {
                 param = (AsyncPassParamRecv)IAR.AsyncState;
                 int bytesRead = param.GetSocket().EndReceive(IAR);
 
                 // 버퍼에 추가하고 
                 param.rb.Add(param.data_in, bytesRead);
-                if (rr_for_check.IsCompletedPacket(param.rb.GetString())) param.set();
-                else
+                // C#용 스트링으로 디-시리얼라이즈하고 
+                rs.Deserialize(param.rb.GetBuffer(), param.rb.GetSize(), ref _RecvString);
+
+                if (param._rr.parseR(_RecvString) == REDIS_RESPONSE_TYPE.NOT_ENOUGH_DATA)
+                {
                     param.GetSocket().BeginReceive(
-                        param.data_in, 
-                        0, 
-                        NET_RECV_SIZE, 
-                        SocketFlags.None, 
-                        new AsyncCallback(OnCompletedReceive), 
+                        param.data_in,
+                        0,
+                        NET_RECV_SIZE,
+                        SocketFlags.None,
+                        new AsyncCallback(OnCompletedReceive),
                         param);
+                }
+                else param.set();
+                    
             }
-            catch(SocketException e)
+            catch (SocketException e)
             {
                 String em = e.Message;
             }
-        }
-        
-        public String Request(RESPMaker req)
+        }                
+        public void Request(RESPMaker req, ref RedisRESP2Class rr)
         {
             Send(req.Make().ToString());
-            Recv();
-            return _RecvString;
+            Recv(ref rr);            
         }
-
     }
 }
 }

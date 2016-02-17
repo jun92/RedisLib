@@ -19,24 +19,25 @@ namespace RedisLib
         {
             this._conn = conn;
             _rr = new RedisRESP2Class();
-        }
+        }        
         protected REDIS_RESPONSE_TYPE Process(RESPMaker m)
-        {
-            _rr.parse(_conn.Request(m));
+        {            
+
+            _conn.Request(m, ref _rr);
+
             // _rr.response_type이 ERROR이고 메세지가 -MOVED이고 cluster 설정 상태이면 
             // clusterinfo를 재구축하고, 해당 쿼리를 다시 보낸다. 
-            if( _rr.response_type == REDIS_RESPONSE_TYPE.ERROR)
+            if (_rr.response_type == REDIS_RESPONSE_TYPE.ERROR)
             {
                 String error_string = getError();
-                if( error_string.StartsWith("MOVED") )
+                if (error_string.StartsWith("MOVED"))
                 {
-                    char[] d = { ' '};                    
+                    char[] d = { ' ' };
                     String[] MovedInfo = error_string.Split(d); // 0 - MOVED, 1- hashslot num 2-server:port
                 }
             }
             return _rr.response_type;
         }
-
         public String getString()
         {
             return _rr.getAsString();

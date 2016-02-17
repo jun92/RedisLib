@@ -65,7 +65,8 @@ namespace RedisLib
         private Socket socket;
         public byte[] data_in;
         public int recv_size;
-        public NetRecvBuffer rb; 
+        public NetRecvBuffer rb;
+        public RedisRESP2Class _rr; 
 
         public AsyncPassParamRecv()  : base()
         {
@@ -83,7 +84,10 @@ namespace RedisLib
         {
             return socket;
         }
-
+        public void SetRedisRESP(ref RedisRESP2Class rr)
+        {
+            _rr = rr;
+        }
     }
 }
 }
