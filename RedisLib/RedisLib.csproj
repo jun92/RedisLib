@@ -52,6 +52,7 @@
     <Compile Include="RedisAsyncConnManager.cs" />
     <Compile Include="RedisConnManager.cs" />
     <Compile Include="RedisEnums.cs" />
+    <Compile Include="RedisHashslot.cs" />
     <Compile Include="RedisLib.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RedisObject.cs" />

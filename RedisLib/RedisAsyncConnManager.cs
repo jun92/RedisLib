@@ -19,12 +19,14 @@ namespace RedisLib
         public String _error_msg;
         public String _RecvString;
         public RedisRESP2Class rr;
+        public bool _IsConnected;
 
         public RedisAsyncConnManager(string ip, int port, string auth = null)
         {
             ipep    = new IPEndPoint(IPAddress.Parse(ip), port);
             _conn   = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             rr      = new RedisRESP2Class();
+            _IsConnected = false;
         }
         public bool Connect()
         {
@@ -34,6 +36,8 @@ namespace RedisLib
                 param.socket = _conn;                 
                 _conn.BeginConnect(ipep, new AsyncCallback(OnCompleteConnect), param);
                 param.wait();
+
+                _IsConnected = true;
             }
             catch (SocketException e)
             {
@@ -45,6 +49,7 @@ namespace RedisLib
         public bool Close()
         {
             _conn.Close();
+            _IsConnected = false;
             return true;
         }
         private void OnCompleteConnect(IAsyncResult IAR)

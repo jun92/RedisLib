@@ -86,7 +86,6 @@ namespace RedisLib
             {
                 token = bst[1];
             }
-
             return bst[0].ToString();
         }
         private String getError(ref String token)
@@ -145,25 +144,25 @@ namespace RedisLib
         {
             p = p.Replace("\r", "");
 
-            if (p.StartsWith(":")) 
+            if (p.StartsWith(":"))  // int이므로 
             {
                 if (-1 == p.IndexOf('\n')) return REDIS_RESPONSE_TYPE.NOT_ENOUGH_DATA;
                 retval.Add(getInteger(ref p)); 
                 return REDIS_RESPONSE_TYPE.INT; 
-            } // int이므로 
-            if (p.StartsWith("+")) 
+            }
+            if (p.StartsWith("+"))  // Simple String 
             {
                 if (-1 == p.IndexOf('\n')) return REDIS_RESPONSE_TYPE.NOT_ENOUGH_DATA;
                 retval.Add(getSString(ref p)); 
                 return REDIS_RESPONSE_TYPE.SSTRING; 
-            }// String 
-            if (p.StartsWith("-")) 
+            }
+            if (p.StartsWith("-")) // error 
             {
                 if (-1 == p.IndexOf('\n')) return REDIS_RESPONSE_TYPE.NOT_ENOUGH_DATA;
                 retval.Add(getError(ref p)); 
                 return REDIS_RESPONSE_TYPE.ERROR; 
-            }  // error 
-            if (p.StartsWith("$")) 
+            }
+            if (p.StartsWith("$")) // String  
             { 
                 // \n이 두개가 있어야한다. 
                 int pos;
@@ -174,8 +173,8 @@ namespace RedisLib
                     return REDIS_RESPONSE_TYPE.BSTRING;
                 }
                 else return REDIS_RESPONSE_TYPE.NOT_ENOUGH_DATA;
-            } // String 
-            if (p.StartsWith("*"))
+            } 
+            if (p.StartsWith("*")) // array 
             {
                 // 배열이라면 배열 갯수를 구해
                 // 배열 갯수 만큼 반복하며 

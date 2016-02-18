@@ -10,12 +10,22 @@ namespace Syncnet
 { 
 namespace RedisLib
 {
+    public class RedisNodeConnInfo
+    {
+        public String server_ip;
+        public int server_port;
+    }
+    
     public class RedisClusterNode
     {
         public int lowHashSlot;
         public int highHashSlot;
-        public String MasterServer;
-        public int MasterPort; 
+        public List<RedisNodeConnInfo> ServerConnInfo;        
+
+        public RedisClusterNode()
+        {
+            ServerConnInfo = new List<RedisNodeConnInfo>();
+        }
     }
     [Serializable]
     public class RedisClusterInfo

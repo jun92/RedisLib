@@ -9,20 +9,17 @@ namespace Syncnet
 namespace RedisLib
 {
     public class RedisObject
-    {
-        
+    {   
         private RedisAsyncConnManager _conn; 
         private RedisRESP2Class _rr;
 
-        
         public RedisObject(RedisAsyncConnManager conn)
         {
             this._conn = conn;
             _rr = new RedisRESP2Class();
         }        
         protected REDIS_RESPONSE_TYPE Process(RESPMaker m)
-        {            
-
+        {   
             _conn.Request(m, ref _rr);
 
             // _rr.response_type이 ERROR이고 메세지가 -MOVED이고 cluster 설정 상태이면 
@@ -70,9 +67,6 @@ namespace RedisLib
         {
             return _rr.getAsString();
         }
-
-
-
     }
 }
 }
