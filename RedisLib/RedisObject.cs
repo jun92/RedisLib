@@ -10,14 +10,26 @@ namespace RedisLib
 {
     public class RedisObject
     {   
-        private RedisAsyncConnManager _conn; 
+        protected RedisAsyncConnManager _conn;
+        protected RedisClusterSupport _rcs;
         private RedisRESP2Class _rr;
 
         public RedisObject(RedisAsyncConnManager conn)
         {
             this._conn = conn;
             _rr = new RedisRESP2Class();
-        }        
+        }
+        public RedisObject(RedisAsyncConnManager conn, RedisClusterSupport rcs)
+        {
+            this._conn = conn;
+            this._rcs = rcs;
+            _rr = new RedisRESP2Class();
+
+        }
+        protected void AdjustClusterServer(String key)
+        {
+            if (_conn.IsClusterEnable() ) _rcs.ReconnAccordingToKey(key);
+        }
         protected REDIS_RESPONSE_TYPE Process(RESPMaker m)
         {   
             _conn.Request(m, ref _rr);

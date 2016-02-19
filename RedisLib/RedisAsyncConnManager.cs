@@ -20,13 +20,23 @@ namespace RedisLib
         public String _RecvString;
         public RedisRESP2Class rr;
         public bool _IsConnected;
+        private bool _IsClusterEnable;
 
-        public RedisAsyncConnManager(string ip, int port, string auth = null)
+        public RedisAsyncConnManager(string ip, int port)
         {
             ipep    = new IPEndPoint(IPAddress.Parse(ip), port);
             _conn   = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             rr      = new RedisRESP2Class();
             _IsConnected = false;
+            _IsClusterEnable = false; 
+        }
+        public void SetClusterEnable()
+        {
+            _IsClusterEnable = true;
+        }
+        public bool IsClusterEnable()
+        {
+            return _IsClusterEnable;
         }
         public bool Connect()
         {
@@ -45,6 +55,31 @@ namespace RedisLib
                 return false;
             }
             return true;
+        }
+        public bool Reconnect(String ip, int port)
+        {
+            // 기존 연결 닫기 
+            _conn.Close();
+            _conn = null;
+            _conn = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            _IsConnected = false;
+            
+            // 새로운 서버 정보 세팅 
+            ipep = new IPEndPoint(IPAddress.Parse(ip), port);
+            try
+            {
+                AsyncPassParamConnect param = new AsyncPassParamConnect();
+                param.socket = _conn;
+                _conn.BeginConnect(ipep, new AsyncCallback(OnCompleteConnect), param);
+                param.wait();
+                _IsConnected = true;
+            }
+            catch (SocketException e)
+            {
+                _error_msg = e.ToString();
+                return false;
+            }
+            return true; 
         }
         public bool Close()
         {

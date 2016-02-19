@@ -17,7 +17,16 @@ namespace TestApp
 
 
             Redis r = new Redis("192.168.184.217", 7000, true);
+
+            RedisHashes h = r.GetHashes();
             
+            h.hset("jun3", "bb", "10");
+            h.hset("jun4", "bb", "11");
+            h.hset("jun5", "cc", "22");
+            h.hgetall("jun");
+
+            h.getHashes(ref dic);
+
             
             /*
             RedisConnection c = r.GetConnection();
@@ -71,5 +80,6 @@ namespace TestApp
             k.scan("0");
             */
         }
+        
     }
 }

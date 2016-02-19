@@ -12,9 +12,15 @@ namespace RedisLib
         public RedisSets(RedisAsyncConnManager conn) : base(conn)
         {
         }
+        public RedisSets(RedisAsyncConnManager conn, RedisClusterSupport rcs)
+            : base(conn, rcs)
+        {
+        }
         public REDIS_RESPONSE_TYPE sadd(String key, String member, params String[] members)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("SADD");
             m.Add(key);
             m.Add(member);
@@ -27,6 +33,8 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE scard(String key)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("SCARD");
             m.Add(key);
             return Process(m);
@@ -34,6 +42,8 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE sdiff(String key, params String[] keys)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("SDIFF");
             m.Add(key);
             foreach(String s in keys)
@@ -46,6 +56,8 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE sdiffstore(String dest, String key, params String[] keys)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("SDIFFSTORE");
             m.Add(dest);
             m.Add(key);
@@ -58,6 +70,7 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE sinter(String key, params String[] keys)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
 
             m.Add("SINTER");
             m.Add(key);
@@ -70,6 +83,7 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE sinterstore(String dest, String key, params String[] keys)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
 
             m.Add("SINTERSTORE");
             m.Add(dest);
@@ -83,6 +97,8 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE sismember(String key, String member)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("SISMEMBER");
             m.Add(key);
             m.Add(member);
@@ -91,6 +107,8 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE smembers(String key)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("SMEMBERS");
             m.Add(key);
             return Process(m);
@@ -109,6 +127,8 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE spop(String key, int count = 0)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("SPOP");
             m.Add(key);
             if( count != 0 )
@@ -120,6 +140,8 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE srandmember(String key, int count = 0)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("SRANDMEMBER");
             m.Add(key);
             if (count != 0)
@@ -131,6 +153,8 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE srem(String key, String member, params String[] members)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("SREM");
             m.Add(key);
             m.Add(member);
@@ -143,6 +167,7 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE sscan(String key, String cursor, String pattern = null , String count = null )
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
 
             m.Add("SSCAN");
             m.Add(key);
@@ -155,6 +180,8 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE sunion(String key, params String[] keys)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("SUION");
             m.Add(key);
             foreach( String s in keys )
@@ -166,6 +193,8 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE sunionstore(String dest, String key, params String[] keys)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("SUIONSTORE");
             m.Add(dest);
             m.Add(key);

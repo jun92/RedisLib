@@ -12,6 +12,9 @@ namespace RedisLib
         public RedisServer(RedisAsyncConnManager conn) : base(conn)
         {
         }
+        public RedisServer(RedisAsyncConnManager conn, RedisClusterSupport rcs) : base(conn, rcs)
+        {
+        }
         public REDIS_RESPONSE_TYPE bgrewriteaof()
         {
             RESPMaker m = new RESPMaker();

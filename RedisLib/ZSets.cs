@@ -29,11 +29,16 @@ namespace RedisLib
             : base(conn)
         {
         }
+        public RedisZSets(RedisAsyncConnManager conn, RedisClusterSupport rcs) : base(conn, rcs)
+        {
+        }
         public REDIS_RESPONSE_TYPE zadd(String key, ZSET_ADD_TYPE options, String score, String member, params String[] scorenmembers)
         {
             if( (scorenmembers.Length %2) != 0 ) return REDIS_RESPONSE_TYPE.ERROR;
 
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("ZADD");
             m.Add(key);
 
@@ -55,6 +60,8 @@ namespace RedisLib
         {
             if (scorenmembers.Count == 0) return REDIS_RESPONSE_TYPE.ERROR;
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("ZADD");
             m.Add(key);
 
@@ -75,6 +82,8 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE zcard(String key)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("ZCARD");
             m.Add(key);
             return Process(m);
@@ -90,6 +99,8 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE zcount(String key, int min, int max)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("ZCOUNT");
             m.Add(key);
             if (min == 0) m.Add("-inf");
@@ -101,6 +112,8 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE zincrby(String key, int increment, String member)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("ZINCRBY");
             m.Add(key);
             m.Add(increment.ToString());
@@ -145,7 +158,8 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE zlexcount(String key, String min, String max)
         {
             RESPMaker m = new RESPMaker();
-
+            AdjustClusterServer(key);
+            
             m.Add("ZLEXCOUNT");
             m.Add(key);
             m.Add(min);
@@ -155,6 +169,7 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE zrange(String key, int start, int stop, bool IsWithScore = false)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
 
             m.Add("ZRANGE");
             m.Add(key);
@@ -170,6 +185,8 @@ namespace RedisLib
                 (offset == 0 && count != 0)) return REDIS_RESPONSE_TYPE.ERROR;
             
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("ZRANGEBYLEX");
             m.Add(key);
             m.Add(min);
@@ -188,6 +205,8 @@ namespace RedisLib
                 (offset == 0 && count != 0)) return REDIS_RESPONSE_TYPE.ERROR;
 
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("ZRANGEBYSCORE");
             m.Add(key);
             m.Add(min);
@@ -206,6 +225,8 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE zrank(String key, String member)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("ZRANK");
             m.Add(key);
             m.Add(member);
@@ -214,6 +235,8 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE zrem(String key, String member, params String[] members)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("ZREM");
             m.Add(key);
             m.Add(member);
@@ -226,6 +249,8 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE zremrangebylex(String key, String min, String max)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("ZREMRANGEBYLEX");
             m.Add(key);
             m.Add(min);
@@ -235,6 +260,8 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE zremrangebyrank(String key, int start, int stop)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("ZREMRANGEBYRANK");
             m.Add(key);
             m.Add(start.ToString());
@@ -244,6 +271,8 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE zremrangebyscore(String key, String min, String max)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("ZREMRANGEBYSCORE");
             m.Add(key);
             m.Add(min);
@@ -254,6 +283,8 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE zrevrange(String key, int start, int stop, bool IsWithScores = false)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("ZREVRANGE");
             m.Add(key);
             m.Add(start.ToString());
@@ -267,6 +298,8 @@ namespace RedisLib
                 (offset == 0 && count != 0)) return REDIS_RESPONSE_TYPE.ERROR;
 
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("ZREVRANGEBYLEX");
             m.Add(key);
             m.Add(max);
@@ -285,6 +318,8 @@ namespace RedisLib
                 (offset == 0 && count != 0)) return REDIS_RESPONSE_TYPE.ERROR;
 
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("ZREVRANGEBYSCORE");
             m.Add(key);
             m.Add(max);
@@ -303,6 +338,8 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE zrevrank(String key, String member)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("ZREVRANK");
             m.Add(key);
             m.Add(member);
@@ -311,6 +348,7 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE zscan(String key, String cursor, String pattern = null, String count = null)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
 
             m.Add("ZSCAN");
             m.Add(key);
@@ -323,12 +361,13 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE zscore(String key, String member)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("ZSCORE");
             m.Add(key);
             m.Add(member);
             return Process(m);
         }
-
         public REDIS_RESPONSE_TYPE zunionstore(String dest, List<String> keys, List<int> weights, ZSET_AGGREGATE_TYPE aggregate = ZSET_AGGREGATE_TYPE.NONE)
         {
             if (keys.Count == 0) return REDIS_RESPONSE_TYPE.ERROR;
@@ -351,8 +390,6 @@ namespace RedisLib
             }
             return Process(m);
         }
-
-
     }
 }
 }

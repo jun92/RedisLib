@@ -16,7 +16,7 @@ namespace RedisLib
         private RedisClusterInfo rci;
         public RedisClusterSupport(RedisAsyncConnManager conn) : base(conn)
         {
-
+            
         }
         public REDIS_RESPONSE_TYPE clusterslots()
         {
@@ -70,7 +70,9 @@ namespace RedisLib
                 }
                 rci.Add(rcn);
             }
+
             System.IO.Directory.CreateDirectory(@"C:\RedisLib");
+
             XmlSerializer xs = new XmlSerializer(typeof(RedisClusterInfo));
             StreamWriter wr = new StreamWriter(config_filename);
             xs.Serialize(wr, rci);
@@ -82,9 +84,18 @@ namespace RedisLib
             return h.getHashslot(key);            
         }
 
-        public void ReconnAccordingToKey(String key)
-        {
+        public bool ReconnAccordingToKey(String key)
+        {            
+            // 리턴되는 주소는 마스타 및 슬레이브의 주소이다. 
+            List<String> ip = new List<String>();
+            List<int> port = new List<int>();
 
+            if (!FindProperServer(getHashslot(key), ref ip, ref port)) return false;
+            for(int i = 0; i < ip.Count; i++)
+            {
+                if (_conn.Reconnect(ip[i].ToString(), port[i])) return true;
+            }
+            return false;
         }
         public bool FindProperServer(int hashslot, ref List<String> ip, ref List<int> port)
         {

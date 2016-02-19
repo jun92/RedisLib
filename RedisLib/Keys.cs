@@ -9,14 +9,18 @@ namespace Syncnet
 namespace RedisLib
 {
     public class RedisKeys : RedisObject
-    {
+    {   
         public RedisKeys(RedisAsyncConnManager conn)
             : base(conn)
-        {            
+        {     
+        }
+        public RedisKeys(RedisAsyncConnManager conn, RedisClusterSupport rcs) : base(conn,rcs)
+        {   
         }
         public REDIS_RESPONSE_TYPE del(params String[] keys)
         {
             RESPMaker m = new RESPMaker();            
+
             m.Add("DEL");
             foreach(String s in keys)
             {                
@@ -26,7 +30,8 @@ namespace RedisLib
         }
         public REDIS_RESPONSE_TYPE dump(String key)
         {
-            RESPMaker m = new RESPMaker();         
+            RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
 
             m.Add("DUMP");
             m.Add(key);
@@ -46,7 +51,8 @@ namespace RedisLib
         }
         public REDIS_RESPONSE_TYPE expire(String key, int seconds)
         {
-            RESPMaker m = new RESPMaker();            
+            RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
 
             m.Add("EXPIRE");
             m.Add(key);
@@ -56,7 +62,9 @@ namespace RedisLib
         }
         public REDIS_RESPONSE_TYPE expireat(String key, int unix_timestamp)
         {
-            RESPMaker m = new RESPMaker(); 
+            RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("EXPIREAT");
             m.Add(key);
             m.Add(unix_timestamp.ToString());
@@ -106,7 +114,8 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE persist(String key)
         {
             RESPMaker m = new RESPMaker();
-            
+            AdjustClusterServer(key);
+
             m.Add("PERSIST");
             m.Add(key);
 
@@ -115,6 +124,7 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE pexpire(String key, long milliseconds)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
 
             m.Add("PEXPIRE");
             m.Add(key);
@@ -125,6 +135,7 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE pexpireat(String key, String unixtimestamp_milliseconds)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
             
             m.Add("PEXPIREAT");
             m.Add(key);
@@ -136,6 +147,7 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE pttl(String key)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
             
             m.Add("PTTL");
             m.Add(key);
@@ -151,7 +163,7 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE rename(String key, String new_key)
         {
             RESPMaker m = new RESPMaker();
-
+            
             m.Add("RENAME");
             m.Add(key);
             m.Add(new_key);
@@ -196,6 +208,8 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE ttl(String key) 
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("TTL");
             m.Add(key);
             return Process(m);
@@ -203,6 +217,8 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE type(String key)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("TYPE");
             m.Add(key);
             return Process(m);

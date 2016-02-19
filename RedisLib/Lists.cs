@@ -16,6 +16,10 @@ namespace RedisLib
         public RedisLists(RedisAsyncConnManager conn) : base(conn)
         {
         }
+        public RedisLists(RedisAsyncConnManager conn, RedisClusterSupport rcs) : base(conn, rcs)
+        {
+
+        }
         /// <summary>
         /// 
         /// 
@@ -28,6 +32,7 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE blpop(String key, int timeout, params String[] extra_keys)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
 
             m.Add("BLPOP");
             foreach( String s in extra_keys)
@@ -41,6 +46,7 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE brpop(String key, int timeout, params String[] extra_keys)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
 
             m.Add("BRPOP");
             foreach (String s in extra_keys)
@@ -65,6 +71,8 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE lindex(String key, int index)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("LINDEX");
             m.Add(key);
             m.Add(index.ToString());
@@ -73,6 +81,8 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE linsert(String key, bool IsBefore, String pivot, String value)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("LINSERT");
             m.Add(key);
             if (IsBefore) m.Add("BEFORE");
@@ -84,6 +94,8 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE llen(String key)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
             m.Add("LLEN");
             m.Add(key);
             return Process(m);
@@ -91,6 +103,8 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE lpop(String key)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+            
             m.Add("LPOP");
             m.Add(key);
             return Process(m);
@@ -98,6 +112,7 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE lpush(String key, String value, params String[] values)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
 
             m.Add("LPUSH");
             m.Add(key);
@@ -112,6 +127,7 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE lpushx(String key, String value)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
 
             m.Add("LPUSH");
             m.Add(key);
@@ -122,6 +138,7 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE lrange(String key, int start, int end)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
 
             m.Add("LRANGE");
             m.Add(key);
@@ -133,6 +150,7 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE lrem(String key, int count, String value)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
 
             m.Add("LREM");
             m.Add(key);
@@ -144,6 +162,7 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE lset(String key, int index, String value)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
 
             m.Add("LSET");
             m.Add(key);
@@ -155,6 +174,7 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE ltrim(String key, int start, int stop)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
 
             m.Add("LTRIM");
             m.Add(key);
@@ -166,6 +186,7 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE rpop(String key)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
 
             m.Add("RPOP");
             m.Add(key);
@@ -175,6 +196,7 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE rpoplpush(String src, String dest)
         {
             RESPMaker m = new RESPMaker();
+            
 
             m.Add("RPOPLPUSH");
             m.Add(src);
@@ -185,6 +207,7 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE rpush(String key, String value,  params string[] values )
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
 
             m.Add("RPUSH");
             m.Add(key);
@@ -200,6 +223,7 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE rpush(String key, String value)
         {
             RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
 
             m.Add("RPUSH");
             m.Add(key);
