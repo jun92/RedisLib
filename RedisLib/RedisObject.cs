@@ -43,6 +43,7 @@ namespace RedisLib
                 {
                     char[] d = { ' ' };
                     String[] MovedInfo = error_string.Split(d); // 0 - MOVED, 1- hashslot num 2-server:port
+                    _rcs.CreateClusterConfigInfo();
                 }
             }
             return _rr.response_type;
