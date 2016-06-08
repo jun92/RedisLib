@@ -17,15 +17,9 @@ namespace RedisLibUnitTest
             RedisConnection rc = r.GetConnection();
 
             rc.echo("Hello");
-
             Assert.AreEqual("Hello", rc.getString());
-
             rc.echo("World");
-
-            Assert.AreEqual("World", rc.getString());
-
-
-            
+            Assert.AreEqual("World", rc.getString());            
         }
         [TestCategory("Hashes Test")]
         [TestMethod]

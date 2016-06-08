@@ -16,16 +16,18 @@ namespace TestApp
             //REDIS_RESPONSE_TYPE ret;
 
 
-            Redis r = new Redis("192.168.184.217", 7000, true);
+            Redis r = new Redis("192.168.182.189", 6379);
 
             RedisHashes h = r.GetHashes();
             
             h.hset("jun3", "bb", "10");
             h.hset("jun4", "bb", "11");
             h.hset("jun5", "cc", "22");
-            h.hgetall("jun");
+            h.hgetall("jun3");
 
             h.getHashes(ref dic);
+
+            
 
             
             /*

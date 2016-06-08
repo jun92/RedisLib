@@ -42,6 +42,7 @@ namespace RedisLib
         {
             try
             {
+                int i = Thread.CurrentThread.ManagedThreadId; 
                 AsyncPassParamConnect param = new AsyncPassParamConnect();
                 param.socket = _conn;                 
                 _conn.BeginConnect(ipep, new AsyncCallback(OnCompleteConnect), param);
@@ -90,9 +91,12 @@ namespace RedisLib
         private void OnCompleteConnect(IAsyncResult IAR)
         {
             try
-            {
+            {                
+                int i = Thread.CurrentThread.ManagedThreadId; 
+
                 AsyncPassParamConnect param = (AsyncPassParamConnect)IAR.AsyncState;
                 param.set();
+                param.socket.EndConnect(IAR);
             }
             catch (SocketException e)
             {
