@@ -197,6 +197,7 @@ namespace RedisLib
                 param.rb.Add(param.data_in, bytesRead);
                 // C#용 스트링으로 디-시리얼라이즈하고 
                 rs.Deserialize(param.rb.GetBuffer(), param.rb.GetSize(), ref _RecvString);
+                //rs.Deserialize(param.data_in, param.data_in.Length, ref _RecvString);
 
                 if (param._rr.parseR(_RecvString) == REDIS_RESPONSE_TYPE.NOT_ENOUGH_DATA)
                 {
@@ -215,7 +216,7 @@ namespace RedisLib
             {
                 String em = e.Message;
             }
-        }                
+        }        
         public void Request(RESPMaker req, ref RedisRESP2Class rr)
         {
             Send(req.Make().ToString());

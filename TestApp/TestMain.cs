@@ -11,43 +11,45 @@ namespace TestApp
     {
         static void Main(string[] args)
         {
+
             Dictionary<string, string> dic = new Dictionary<string, string>();
             List<string> li = new List<String>();
-            //REDIS_RESPONSE_TYPE ret;
-
-
-            Redis r = new Redis("192.168.182.189", 6379);
-
-            RedisHashes h = r.GetHashes();
-            
-            h.hset("jun3", "bb", "10");
-            h.hset("jun4", "bb", "11");
-            h.hset("jun5", "cc", "22");
-            h.hgetall("jun3");
-
-            h.getHashes(ref dic);
+            REDIS_RESPONSE_TYPE ret;
+            Redis r = new Redis("192.168.182.149", 6379);
 
             
-
             
             /*
             RedisConnection c = r.GetConnection();
             ret = c.select(10);
+            RedisHashes h = r.GetHashes();
+            h.hset("jun3", "bb", "10");
+            h.hset("jun4", "bb", "11");
+            h.hset("jun5", "cc", "22");
+            h.hgetall("jun3");
+            h.getHashes(ref dic);
+            */
+            
+
+            
+            
+            RedisConnection c = r.GetConnection();
+            ret = c.select(1);
             if( ret == REDIS_RESPONSE_TYPE.ERROR)
             {
                 Console.WriteLine("{0}", c.getError());
                 return;
             }
-            RedisLists l = r.GetLists();*/
+            RedisLists l = r.GetLists();
             
             /*for (int i = 0; i < 10000; i++)
             {
                 l.lpush("longlist", "list" + i.ToString());
             }*/
-            /*
+            
             l.lrange("longlist", 0, -1);
             l.getLists(ref li);
-             */ 
+            
             
             //RedisClusterSupport rcs = r.GetClusterSupport();
 
@@ -67,7 +69,8 @@ namespace TestApp
             l.lpop("listkey01");
             l.getLists(ref list);
             */
-            /*Dictionary<string, string> dic = new Dictionary<string, string>();
+            /*
+            Dictionary<string, string> dic = new Dictionary<string, string>();
             List<String> list = new List<String>();
             Redis r = new Redis("192.168.184.217", 6379);
             RedisConnection c = r.GetConnection();
@@ -81,6 +84,7 @@ namespace TestApp
 
             k.scan("0");
             */
+            
         }
         
     }

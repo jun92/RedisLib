@@ -59,6 +59,7 @@
     <Compile Include="RedisSerializer.cs" />
     <Compile Include="RESP2Class.cs" />
     <Compile Include="RESPMaker.cs" />
+    <Compile Include="RESPNode.cs" />
     <Compile Include="RESPToken.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="Sets.cs" />
