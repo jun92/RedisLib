@@ -85,6 +85,10 @@ namespace RedisLib
         {
             return new RedisClusterSupport(_connManager);
         }
+        public RedisServer GetServer()
+        {
+            return new RedisServer(_connManager);
+        }
     }
 } // end of namepsace Redis 
 } // end of namespace Syncnet 

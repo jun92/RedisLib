@@ -7,6 +7,11 @@ namespace Syncnet
 { 
 namespace RedisLib
 {
+    public enum REDIS_NODE_ADD_DIRECTION
+    {
+        NEXT = 1,
+        CHILD = 2
+    }
     public class RedisRESP2Class
     {
         public string _error_msg;
@@ -15,10 +20,18 @@ namespace RedisLib
         public List<String> result_array;
         public List<dynamic> result_nested;
         public REDIS_RESPONSE_TYPE response_type;
+
+        private StringBuilder crumb_buffer;
+        private RESPNode StartNode; // It should be empty, only use StartNode.Next as pointing first node.
+        private RESPNode CurNode;
+        
         public RedisRESP2Class()
         {
             result_array = new List<String>();
             result_nested = new List<dynamic>();
+            crumb_buffer = new StringBuilder();
+            StartNode = new RESPNode();
+            CurNode = null;
         }
         public void getAsDictionary(ref Dictionary<String, String> dic)
         {
@@ -137,8 +150,280 @@ namespace RedisLib
         public REDIS_RESPONSE_TYPE parseR(String RESP)
         {
             result_nested.Clear();
-            response_type = parse_recursiveR(ref RESP, ref result_nested);
+
+            crumb_buffer.Append(RESP.ToString());
+
+            String param = crumb_buffer.ToString();
+
+            response_type = MakeNode(ref param);
+            crumb_buffer.Clear();
+            crumb_buffer.Append(param);
+            //response_type = parse_recursiveR(ref param, ref result_nested);
             return response_type;
+        }
+        public void AddNode(REDIS_NODE_ADD_DIRECTION Direction, ref RESPNode CurNode, out RESPNode NewNode, REDIS_RESPONSE_TYPE type, String TokenValue, ref int ArraySize)
+        {
+            NewNode = new RESPNode();
+            if( Direction == REDIS_NODE_ADD_DIRECTION.NEXT ) // 항목의 열거일 경우 
+            {
+                CurNode.AddNext(ref NewNode);
+                CurNode = CurNode.Next;
+                CurNode.SetData(type, TokenValue, CurNode.Prev.TotalCount, CurNode.Prev.CurrentCount + 1);
+            }
+            else // 새로운 배열  요소가 추가됐을 경우 
+            {   
+                CurNode.AddChild(ref NewNode);
+                CurNode = CurNode.Child;
+                CurNode.SetData(type, TokenValue, ArraySize, 0);
+            }
+        }
+        
+        public REDIS_RESPONSE_TYPE MakeNode(ref String param)
+        {
+            bool IsPacketEnd = false; 
+            String TokenValue = "";             
+            REDIS_TOKEN_RETURTN_TYPE TType;            
+
+            int ArraySize = 0;
+            if( CurNode == null )
+            {
+                CurNode = StartNode;
+            }
+            while( true )
+            {
+                TType = GetNextToken(ref param, ref TokenValue);
+            
+                switch( TType)
+                {
+                    case REDIS_TOKEN_RETURTN_TYPE.INT:                    
+                        {
+                            RESPNode NewNode;// = new RESPNode();                           
+                            AddNode(REDIS_NODE_ADD_DIRECTION.NEXT, ref CurNode, out NewNode, REDIS_RESPONSE_TYPE.INT, TokenValue,  ref ArraySize);                
+                        }                    
+                        break;
+                    case REDIS_TOKEN_RETURTN_TYPE.SSTRING:
+                        {
+                            RESPNode NewNode;// = new RESPNode();
+                            AddNode(REDIS_NODE_ADD_DIRECTION.NEXT, ref CurNode, out NewNode, REDIS_RESPONSE_TYPE.SSTRING, TokenValue, ref ArraySize);                            
+                        }                    
+                        break;
+                    case REDIS_TOKEN_RETURTN_TYPE.ERROR:
+                        {
+                            RESPNode NewNode;// = new RESPNode();
+                            AddNode(REDIS_NODE_ADD_DIRECTION.NEXT, ref CurNode, out NewNode, REDIS_RESPONSE_TYPE.ERROR, TokenValue, ref ArraySize);
+                        }
+                        break;
+                    case REDIS_TOKEN_RETURTN_TYPE.BSTRING: // ex) "$4\r\n" 
+                        {
+                            int StringLength = int.Parse(TokenValue);
+                            if(-1 == StringLength ) // handle "$-1\r\n"
+                            {
+                                // add null string. 
+                                RESPNode NewNode;// = new RESPNode();
+                                AddNode(REDIS_NODE_ADD_DIRECTION.NEXT, ref CurNode, out NewNode, REDIS_RESPONSE_TYPE.BSTRING, null, ref ArraySize);                                
+                            }
+                        }
+                        break;
+                    case REDIS_TOKEN_RETURTN_TYPE.BSTRINGBODY: // ex) "$4\r\nABCD\r\n" => "ABCD\r\n\" 
+                        {
+                            RESPNode NewNode;// = new RESPNode();
+                            AddNode(REDIS_NODE_ADD_DIRECTION.NEXT, ref CurNode, out NewNode, REDIS_RESPONSE_TYPE.BSTRING, TokenValue, ref ArraySize);
+                        }
+                        break;
+                    case REDIS_TOKEN_RETURTN_TYPE.ARRAY:
+                        {
+                            ArraySize = int.Parse(TokenValue);
+                            RESPNode NewNode;// = new RESPNode();
+                            if( ArraySize == -1 )
+                            {
+                                // nil array 
+                                AddNode(REDIS_NODE_ADD_DIRECTION.NEXT, ref CurNode, out NewNode, REDIS_RESPONSE_TYPE.ARRAY, null, ref ArraySize);                            
+                            }
+                            else if( ArraySize == 0)
+                            {
+                                ArraySize = 0;
+                                AddNode(REDIS_NODE_ADD_DIRECTION.NEXT, ref CurNode, out NewNode, REDIS_RESPONSE_TYPE.ARRAY, "", ref ArraySize);
+                                AddNode(REDIS_NODE_ADD_DIRECTION.CHILD, ref CurNode, out NewNode, REDIS_RESPONSE_TYPE.ARRAY, "", ref ArraySize);
+                            }
+                            else // 코드를 좀 더 명확하게 보이기 위해 중복 코드로. 
+                            {
+                                AddNode(REDIS_NODE_ADD_DIRECTION.NEXT, ref CurNode, out NewNode, REDIS_RESPONSE_TYPE.ARRAY, "", ref ArraySize);
+                                AddNode(REDIS_NODE_ADD_DIRECTION.CHILD, ref CurNode, out NewNode, REDIS_RESPONSE_TYPE.ARRAY, "", ref ArraySize);                                
+                            }                            
+                           
+                            ArraySize = 0;
+
+                        }
+                        break;
+                    case REDIS_TOKEN_RETURTN_TYPE.NOT_ENOUGH_DATA:
+                        return REDIS_RESPONSE_TYPE.NOT_ENOUGH_DATA;
+                }                
+                // 반복 
+                while( true )
+                {
+                    if (CurNode.TotalCount == CurNode.CurrentCount)
+                    {
+                        CurNode = CurNode.GoBack(StartNode);
+
+                        if (CurNode == StartNode.Next)
+                        {
+                            IsPacketEnd = true;
+                            break;
+                        }
+                    }
+                    else
+                        break;
+                        
+                }
+                if (IsPacketEnd) break;                
+                if (param == "") return REDIS_RESPONSE_TYPE.NOT_ENOUGH_DATA;
+            }
+
+            // 자료 구조 읽어서 result_nested에 적재 
+            if (IsPacketEnd)
+            {
+                RESPNode it = StartNode.Next;
+
+                while( it != null )
+                {
+                    if (it.Type == REDIS_RESPONSE_TYPE.ARRAY)
+                    {
+                        List<dynamic> NewNode = new List<dynamic>();
+                        it = GetNodeArray(it, ref NewNode);
+                        result_nested.Add(NewNode);
+                    }
+                    else
+                    {
+                        //Console.WriteLine("type:[{0}],value:[{1}]({2}/{3})", it.Type.ToString(), it.Value.ToString(), it.CurrentCount, it.TotalCount);
+                        AddResultNested(ref result_nested, it.Type, it.Value);
+                    }   
+                    it = it.Next;
+                }
+            }
+            return StartNode.Next != null ? StartNode.Next.Type : REDIS_RESPONSE_TYPE.ERROR;
+        }
+        public void AddResultNested(ref List<dynamic> node, REDIS_RESPONSE_TYPE type, String Value )
+        {
+            switch(type)
+            {
+                case REDIS_RESPONSE_TYPE.BSTRING:
+                case REDIS_RESPONSE_TYPE.SSTRING:
+                case REDIS_RESPONSE_TYPE.ERROR:
+                    node.Add(Value);
+                    break;
+                case REDIS_RESPONSE_TYPE.INT:
+                    node.Add(int.Parse(Value));
+                    break;                
+            }
+        }
+        public RESPNode GetNodeArray(RESPNode CurNode, ref List<dynamic> NewNode)
+        {
+            RESPNode it = CurNode;
+            int TotalCount;           
+
+            it = it.Child;
+            TotalCount = it.TotalCount;
+            it = it.Next;
+            
+            while( it != null )
+            {
+                if (it.Type == REDIS_RESPONSE_TYPE.ARRAY)
+                {
+                    List<dynamic> NewChildNode = new List<dynamic>();
+                    it = GetNodeArray(it, ref NewChildNode);
+                    NewNode.Add(NewChildNode);
+                }
+                else
+                {
+                    //Console.WriteLine("type:[{0}],value:[{1}]({2}/{3})", it.Type.ToString(), it.Value.ToString(), it.CurrentCount, it.TotalCount);
+                    AddResultNested(ref NewNode, it.Type, it.Value);
+                }
+                it = it.Next;
+            }
+            return CurNode;
+        }
+
+        public REDIS_TOKEN_RETURTN_TYPE GetNextToken(ref String Param, ref String Token)
+        {
+            REDIS_TOKEN_RETURTN_TYPE RetVal = REDIS_TOKEN_RETURTN_TYPE.ERROR;
+            String[] Delimeter = { "\r\n" };
+            String[] Tokens = Param.Split(Delimeter, 2, StringSplitOptions.None); // this action strips \r\n. 
+            if( Tokens.Length < 2 )
+            {
+                RetVal = REDIS_TOKEN_RETURTN_TYPE.NOT_ENOUGH_DATA;                
+            }
+            else
+            {
+                if (Tokens[0].StartsWith(":"))
+                {
+                    RetVal = REDIS_TOKEN_RETURTN_TYPE.INT;
+                    Token = Tokens[0].Substring(1);
+                }
+                else if (Tokens[0].StartsWith("+"))
+                {
+                    RetVal = REDIS_TOKEN_RETURTN_TYPE.SSTRING;
+                    Token = Tokens[0].Substring(1);
+                }
+                else if (Tokens[0].StartsWith("-"))
+                {
+                    RetVal = REDIS_TOKEN_RETURTN_TYPE.ERROR;
+                    Token = Tokens[0].Substring(1);
+                }
+                else if (Tokens[0].StartsWith("$"))
+                {
+                    RetVal = REDIS_TOKEN_RETURTN_TYPE.BSTRING;
+                    Token = Tokens[0].Substring(1);
+                }
+                else if (Tokens[0].StartsWith("*"))
+                {
+                    RetVal = REDIS_TOKEN_RETURTN_TYPE.ARRAY;
+                    Token = Tokens[0].Substring(1);
+                }
+                else
+                {
+                    RetVal = REDIS_TOKEN_RETURTN_TYPE.BSTRINGBODY;
+                    Token = Tokens[0];
+                }
+                Param = Tokens[1];
+            }            
+            return RetVal;
+        }
+        
+        public String GetRESPToken(ref String Param)
+        {
+            String[] delimeter = { "\r\n" };            
+            String[] token = Param.Split(delimeter, 2, StringSplitOptions.None); // this action strips \r\n. 
+            if( token.Length < 2)
+            {
+                return null;
+            }
+            else
+            {
+                String NewToken = token[0];
+                String SizeString = NewToken.Substring(1);
+                int Size = int.Parse(SizeString);
+
+                // 배열이나 문자열의 경우 그 다음 한개의 \r\n까지 왔는지 체크해서 리턴한다.(RESPNode생성 문제때문에)
+                // 예외 : $의 경우 -1일 경우(= "$-1\r\n"), *의 경우 0일 경우(="*0\r\n"). 
+
+                if( (NewToken.StartsWith("*") && Size != 0) || (NewToken.StartsWith("$") && Size != -1 ))
+                {   
+                    String[] SecondTryToken = token[1].Split(delimeter, 2, StringSplitOptions.None);
+                    if (SecondTryToken.Length < 2) { return null; }
+                    else
+                    {
+                        StringBuilder RetString = new StringBuilder();
+                        RetString.Append(token[0].ToString());
+                        RetString.Append("\r\n");
+                        RetString.Append(SecondTryToken[0].ToString());
+
+                        Param = SecondTryToken[1];
+                        return RetString.ToString();
+                    }
+                }
+                Param = token[1];
+                return token[0];
+            }
         }
         public REDIS_RESPONSE_TYPE parse_recursiveR(ref String p, ref List<dynamic> retval)
         {

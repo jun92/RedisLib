@@ -33,7 +33,9 @@ namespace Syncnet
             public void Deserialize(byte[] data_in, int size, ref String data_out)
             {
                 Array.Resize<byte>(ref data_in, size);
-                data_out = Encoding.Default.GetString(data_in);
+                //data_out = Encoding.Default.GetString(data_in);
+                data_out = Encoding.ASCII.GetString(data_in);
+                
             }
         }
     }

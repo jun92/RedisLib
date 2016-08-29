@@ -40,6 +40,11 @@ namespace TestApp
                 Console.WriteLine("{0}", c.getError());
                 return;
             }
+            else
+            {
+                Console.WriteLine("{0}", c.getString());
+            }
+            
             RedisLists l = r.GetLists();
             
             /*for (int i = 0; i < 10000; i++)
@@ -49,6 +54,21 @@ namespace TestApp
             
             l.lrange("longlist", 0, -1);
             l.getLists(ref li);
+
+            RedisServer s = r.GetServer();
+
+            ret = s.command();
+            if( ret == REDIS_RESPONSE_TYPE.ERROR)
+            {
+                Console.WriteLine("{0}", s.getError());
+            }
+            else
+            {
+                List<dynamic> retval = new List<dynamic>();
+                s.getNestedArray(ref retval);
+            }
+            //s.commandinfo("hset");
+
             
             
             //RedisClusterSupport rcs = r.GetClusterSupport();

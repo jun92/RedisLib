@@ -17,5 +17,15 @@ namespace RedisLib
         NOT_ENOUGH_DATA = 5, // 너무 많은 데이타를 받을 경우, 모든 데이타가 도착하지 않았다. 
         NOT_IMPLEMENTED = 6 // not implemented yet.
     } 
+    public enum REDIS_TOKEN_RETURTN_TYPE
+    {
+        ERROR       = 0,
+        INT         = 1,
+        SSTRING     = 2,
+        BSTRING     = 3,
+        ARRAY       = 4,
+        NOT_ENOUGH_DATA = 5,
+        BSTRINGBODY = 6
+    }
 }
 }
