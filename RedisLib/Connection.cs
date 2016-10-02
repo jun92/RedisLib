@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-namespace Syncnet
-{
-namespace RedisLib
+namespace Syncnet.RedisLib
 {
     public class RedisConnection : RedisObject
     {
@@ -13,6 +11,10 @@ namespace RedisLib
         public RedisConnection(RedisAsyncConnManager conn) : base( conn) 
         { 
         }
+        public RedisConnection(RedisAsyncConnManager conn, RedisClusterSupport rcs) : base(conn, rcs)
+        {
+        }
+
         public REDIS_RESPONSE_TYPE auth(string password)
         {
             RESPMaker m         = new RESPMaker();           
@@ -59,5 +61,4 @@ namespace RedisLib
             return Process(m);
         }
     }
-}
 }

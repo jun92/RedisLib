@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Syncnet
+namespace Syncnet.RedisLib
 { 
-namespace RedisLib
-{
-    public class RedisObject
+    public class RedisObject : IDisposable
     {   
         protected RedisAsyncConnManager _conn;
         protected RedisClusterSupport _rcs;
@@ -26,6 +24,23 @@ namespace RedisLib
             _rr = new RedisRESP2Class();
 
         }
+        ~RedisObject()
+        {
+            Dispose(false);            
+        }
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool Disposing)
+        {
+            if (Disposing)
+            {
+                // free managed resources;                
+            }
+            // free native resources             
+        }        
         protected void AdjustClusterServer(String key)
         {
             if (_conn.IsClusterEnable() ) _rcs.ReconnAccordingToKey(key);
@@ -81,5 +96,5 @@ namespace RedisLib
             return _rr.getAsString();
         }
     }
-}
-}
+
+} // end of namespace Syncnet.RedisLib

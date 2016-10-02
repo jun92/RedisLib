@@ -7,10 +7,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.IO; 
 
-namespace Syncnet
+namespace Syncnet.RedisLib
 { 
-namespace RedisLib
-{    
     public class RedisAsyncConnManager
     {
         public const int NET_RECV_SIZE = 4096;
@@ -165,6 +163,8 @@ namespace RedisLib
             param.AllocBuffer(NET_RECV_SIZE);
             param.SetSocket(_conn);
             param.SetRedisRESP(ref rr);
+            param._rr.InitCurNode();
+
 
             try
             {
@@ -176,6 +176,7 @@ namespace RedisLib
                     new AsyncCallback(OnCompletedReceive),
                     param);
                 param.wait();
+                
             }
             catch (SocketException e)
             {
@@ -224,5 +225,4 @@ namespace RedisLib
             Recv(ref rr);            
         }
     }
-}
 }

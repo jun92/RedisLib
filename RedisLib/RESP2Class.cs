@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-namespace Syncnet
+namespace Syncnet.RedisLib
 { 
-namespace RedisLib
-{
     public enum REDIS_NODE_ADD_DIRECTION
     {
         NEXT = 1,
@@ -33,10 +31,15 @@ namespace RedisLib
             StartNode = new RESPNode();
             CurNode = null;
         }
+        public void InitCurNode()
+        {
+            CurNode = null;
+        }
         public void getAsDictionary(ref Dictionary<String, String> dic)
         {
 
             if (result_nested.Count == 0) return;
+            result_nested = result_nested[0];
             if ((result_nested.Count % 2) != 0) return;
             for (int i = 0; i < result_nested.Count; i += 2)
             {
@@ -46,6 +49,7 @@ namespace RedisLib
         public void getAsLists(ref List<String> list)
         {
             if (result_nested.Count == 0) return;
+            result_nested = result_nested[0];
             for (int i = 0; i < result_nested.Count; i++)
             {
                 list.Add(result_nested[i].ToString());
@@ -53,7 +57,7 @@ namespace RedisLib
         }
         public void getAsNestedArray(ref List<dynamic> narray)
         {
-            narray = result_nested;            
+            narray = result_nested[0];            
         }
         public String getAsString()
         {
@@ -580,9 +584,4 @@ namespace RedisLib
             return true;
         }
     }
-
-
-    
-}
-
 }

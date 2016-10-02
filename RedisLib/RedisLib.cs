@@ -6,12 +6,10 @@ using System.Net.Sockets;
 using System.IO; 
 
 
-namespace Syncnet 
+namespace Syncnet.RedisLib
 {
-namespace RedisLib
-{   
     /// <summary>레디스 기본 클래스(메인)</summary>
-    public class Redis
+    public class Redis : IDisposable
     {        
         private bool _IsCluster;
         public RedisAsyncConnManager _connManager;
@@ -38,7 +36,29 @@ namespace RedisLib
                 _rcs.ConstructClusterConfigInfo();
                 _connManager.SetClusterEnable();
             }
-        }        
+        } 
+        ~Redis()
+        {
+            Dispose(false);
+        }       
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool Disposing)
+        {
+            if( Disposing )
+            {
+                // free managed resources;
+            }
+            // free native resources 
+            if (_connManager._IsConnected)
+            {
+                _connManager.Close();
+            }
+
+        }
         
         /// <summary>
         /// 에러 메세지를 리턴 
@@ -67,18 +87,22 @@ namespace RedisLib
         }
         public RedisLists GetLists()
         {
+            if (_IsCluster) return new RedisLists(_connManager, _rcs);
             return new RedisLists(_connManager);
         }
         public RedisConnection GetConnection()
         {
+            if (_IsCluster) return new RedisConnection(_connManager, _rcs);
             return new RedisConnection(_connManager);
         }
         public RedisKeys GetKeys()
         {
+            if (_IsCluster) return new RedisKeys(_connManager, _rcs);
             return new RedisKeys(_connManager);
         }
         public RedisSets GetSets()
         {
+            if (_IsCluster) return new RedisSets(_connManager, _rcs);
             return new RedisSets(_connManager);
         }
         public RedisClusterSupport GetClusterSupport()
@@ -87,8 +111,8 @@ namespace RedisLib
         }
         public RedisServer GetServer()
         {
+            if (_IsCluster) return new RedisServer(_connManager, _rcs);
             return new RedisServer(_connManager);
         }
     }
-} // end of namepsace Redis 
-} // end of namespace Syncnet 
+} // end of namespace Syncnet.RedisLib
