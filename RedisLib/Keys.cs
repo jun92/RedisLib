@@ -4,9 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Syncnet
-{
-namespace RedisLib
+namespace Syncnet.RedisLib
 {
     public class RedisKeys : RedisObject
     {   
@@ -17,15 +15,16 @@ namespace RedisLib
         public RedisKeys(RedisAsyncConnManager conn, RedisClusterSupport rcs) : base(conn,rcs)
         {   
         }
-        public REDIS_RESPONSE_TYPE del(params String[] keys)
-        {
-            RESPMaker m = new RESPMaker();            
 
+        public REDIS_RESPONSE_TYPE del(String key)
+        {
+            RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
             m.Add("DEL");
-            foreach(String s in keys)
+            /*foreach(String s in keys)
             {                
                 m.Add(s);
-            }
+            }*/
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE dump(String key)
@@ -38,15 +37,14 @@ namespace RedisLib
 
             return Process(m);
         }
-        public REDIS_RESPONSE_TYPE exists(params String[] keys)
+        public REDIS_RESPONSE_TYPE exists(String key)
         {
-            RESPMaker m = new RESPMaker();             
+            RESPMaker m = new RESPMaker();
 
+            AdjustClusterServer(key);
             m.Add("EXISTS");
-            foreach (String s in keys)
-            {                
-                m.Add(s);
-            }
+            m.Add(key);
+            
             return Process(m);
         }
         public REDIS_RESPONSE_TYPE expire(String key, int seconds)
@@ -223,6 +221,15 @@ namespace RedisLib
             m.Add(key);
             return Process(m);
         }
+        public REDIS_RESPONSE_TYPE touch(String key)
+        {
+            RESPMaker m = new RESPMaker();
+            AdjustClusterServer(key);
+
+            m.Add("TOUCH");
+            m.Add(key);
+            return Process(m);
+        }
         public REDIS_RESPONSE_TYPE wait(int numslaves, int timeout)
         {
             RESPMaker m = new RESPMaker();
@@ -232,5 +239,5 @@ namespace RedisLib
             return Process(m);
         }
     }
-}
+
 }
