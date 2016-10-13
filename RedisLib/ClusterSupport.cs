@@ -6,16 +6,20 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Xml.Serialization;
 
-namespace Syncnet
-{ 
-namespace RedisLib
+namespace Syncnet.RedisLib
 {
     public class RedisClusterSupport : RedisObject
     {
         private const String config_filename = @"C:\RedisLib\RedisLib-cluster.configuration.xml";
         private RedisClusterInfo rci;
-        public RedisClusterSupport(RedisAsyncConnManager conn) : base(conn)
+        /// <summary>
+        /// 클러스터 구성 정보를 메모리에만 유지할때 파일로 캐시할지 결정
+        /// </summary>
+        private bool FileCached; 
+            
+        public RedisClusterSupport(RedisAsyncConnManager conn, bool FileCache = false) : base(conn)
         {
+            FileCached = FileCache;
             
         }
         public REDIS_RESPONSE_TYPE clusterslots()
@@ -37,8 +41,16 @@ namespace RedisLib
 
         public void ConstructClusterConfigInfo()
         {
-            if (System.IO.File.Exists(config_filename)) LoadClusterConfigInfo();
-            else CreateClusterConfigInfo();            
+            if (FileCached)
+            {
+                if (System.IO.File.Exists(config_filename)) LoadClusterConfigInfo();
+                else CreateClusterConfigInfo();
+            }
+            else
+            {                
+                CreateClusterConfigInfo();
+            }
+            
         }
         public void LoadClusterConfigInfo()
         {            
@@ -71,12 +83,13 @@ namespace RedisLib
                 rci.Add(rcn);
             }
 
-            System.IO.Directory.CreateDirectory(@"C:\RedisLib");
-
-            XmlSerializer xs = new XmlSerializer(typeof(RedisClusterInfo));
-            StreamWriter wr = new StreamWriter(config_filename);
-            xs.Serialize(wr, rci);
-
+            if( FileCached )
+            {
+                System.IO.Directory.CreateDirectory(@"C:\RedisLib");
+                XmlSerializer xs = new XmlSerializer(typeof(RedisClusterInfo));
+                StreamWriter wr = new StreamWriter(config_filename);
+                xs.Serialize(wr, rci);
+            }
         }
         public int getHashslot(String key)
         {
@@ -114,5 +127,4 @@ namespace RedisLib
             return false; 
         }
     }
-}
 }

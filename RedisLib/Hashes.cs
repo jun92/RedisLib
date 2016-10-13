@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Syncnet
+namespace Syncnet.RedisLib
 { 
-namespace RedisLib
-{
+
     public class RedisHashes : RedisObject 
     {    
         public RedisHashes(RedisAsyncConnManager conn) : base (conn)
@@ -130,6 +129,7 @@ namespace RedisLib
             RESPMaker m = new RESPMaker();
             AdjustClusterServer(key);
 
+            m.Add("HMSET");
             m.Add(key);
 
             foreach( KeyValuePair<String, String> kv in fields)
@@ -199,5 +199,4 @@ namespace RedisLib
             return Process(m);
         }
     }
-}
 }
